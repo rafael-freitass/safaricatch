@@ -5,7 +5,7 @@
 ---
 
 ## 📖 Sobre o projeto  
-Este projeto foi desenvolvido para a disciplina de **Lógica de Programação**. Inspirado na Safari Zone de Pokémon, o jogo utiliza gráficos em ASCII diretamente no terminal.  
+Este projeto foi desenvolvido para a disciplina de **Linguagem de Programação**. Inspirado na Safari Zone de Pokémon, o jogo utiliza gráficos ASCII diretamente no terminal.  
 
 ## 🕹️ Características principais  
 - Movimentação estilo *top-down* com comandos **WASD**.  
