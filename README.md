@@ -1,2 +1,26 @@
-# safaricatch
-Este é um jogo simples inspirado na Safari Zone de Pokémon, desenvolvido como parte da disciplina de Lógica de Programação. O jogo é totalmente implementado em Python e roda diretamente no terminal (CMD).
+# Safaricatch  
+
+**Um jogo inspirado na Safari Zone de Pokémon, feito em Python e rodando no CMD.**  
+
+---
+
+## 📖 Sobre o projeto  
+Este projeto foi desenvolvido para a disciplina de **Lógica de Programação**. Inspirado na Safari Zone de Pokémon, o jogo utiliza gráficos em ASCII diretamente no terminal.  
+
+## 🕹️ Características principais  
+- Movimentação estilo *top-down* com comandos **WASD**.  
+- Mecânicas simples de colisão e pontuação.    
+
+---
+
+## 🎯 Objetivo do jogo  
+Explore o mapa e capture pokemons para alcançar a maior pontuação possível. Mas cuidado, o tempo é limitado!  
+
+---
+
+## ✨ Autores
+Rafael Freitas.
+Rafael Myauti.
+Alice Fabris Dias.
+Sérgio Henrique Buzeti.
+Yasmim Ferreira.
