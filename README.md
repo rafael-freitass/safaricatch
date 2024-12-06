@@ -18,6 +18,10 @@ Explore o mapa e capture pokemons para alcançar a maior pontuação possível. 
 
 ---
 
+## Padrões de commit
+- Desenvolvimento de novas features -> Nome padrão de branches: `feat/SAF-X`
+- Desenvolvimento de novas features -> Mensagem padrão de commits: `feature: Creates X...`
+
 ## ✨ Autores
 Rafael Freitas.
 Rafael Myauti.
