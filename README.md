@@ -22,6 +22,20 @@ Explore o mapa e capture pokemons para alcançar a maior pontuação possível. 
 - Desenvolvimento de novas features -> Nome padrão de branches: `feat/SAF-X`
 - Desenvolvimento de novas features -> Mensagem padrão de commits: `feature: Creates X...`
 
+---
+
+## Como rodar
+
+### Windows
+    python -m venv venv
+    ./venv/Scripts/activate
+    pip install -r requirements.txt
+
+### Linux
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install -r requirements.txt
+
 ## ✨ Autores
 Rafael Freitas.
 Rafael Myauti.
