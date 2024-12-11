@@ -1,0 +1,20 @@
+[
+    {
+        "nome": "Pikachu",
+        "tipo": "Elétrico",
+        "descricao": "Um Pokémon rato elétrico.",
+        "habilidades": ["Choque do Trovão", "Cauda de Ferro"]
+    },
+    {
+        "nome": "Charmander",
+        "tipo": "Fogo",
+        "descricao": "Um pequeno lagarto com chama na cauda.",
+        "habilidades": ["Lança-Chamas", "Garra de Dragão"]
+    },
+    {
+        "nome": "Bulbasaur",
+        "tipo": "Grama/Veneno",
+        "descricao": "Um Pokémon inicial que adora luz solar.",
+        "habilidades": ["Folha Navalha", "Chicote de Vinha"]
+    }
+]
