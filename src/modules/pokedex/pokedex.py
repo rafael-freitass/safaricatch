@@ -46,12 +46,17 @@ def mostrar_detalhes(pokemon):
     for habilidade in pokemon['habilidades']:
         print(f"* - {habilidade:<{largura-6}}*")
     print('*' * largura)
-    input("\nPressione Enter para voltar...")
+    print("\nPressione Enter para voltar...")
+    while True:
+        if wc.kbhit():
+            _, key = wc.getch()
+            if key.lower() == '\r':
+                return
 
 # Função principal
 def main():
     # Carrega a Pokédex do arquivo JSON
-    pokedex = carregar_pokedex('../../saves/pokedex.json')
+    pokedex = carregar_pokedex('src/saves/pokedex.json')
     if not pokedex:  # Se a Pokédex estiver vazia, encerra o programa
         print("A Pokédex não pôde ser carregada. Encerrando o programa.")
         return
@@ -67,7 +72,7 @@ def main():
 
         # Verifica se uma tecla foi pressionada
         if wc.kbhit():
-            value, symbol = wc.getch()  # Captura a tecla pressionada
+            _, symbol = wc.getch()  # Captura a tecla pressionada
 
             if symbol.lower() == 'w':  # Sobe na lista
                 selecionado = (selecionado - 1) % len(pokedex)
