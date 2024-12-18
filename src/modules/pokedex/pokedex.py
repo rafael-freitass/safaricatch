@@ -4,13 +4,13 @@ import json
 import cursor
 
 # Função para carregar o arquivo com os ascii dos pokemons
-def carregar_ascii(caminho, imagem_id):
+def carregar_ascii(caminho, nome):
     try:
         with open(caminho, 'r', encoding='utf-8') as arquivo:
             conteudo = arquivo.read()
             imagens = conteudo.split("\n[")  # Divide o conteúdo em blocos
             for bloco in imagens:
-                if bloco.startswith(imagem_id):  # Procura pelo ID da imagem
+                if bloco.startswith(nome):  # Procura pelo ID da imagem
                     return bloco.split("]\n", 1)[1].strip()  # Retorna a imagem sem o ID
         return "Imagem não encontrada."
     except FileNotFoundError:
@@ -35,30 +35,47 @@ def mostrar_pokedex(pokedex, selecionado):
     print(f"{'Pokédex (Use W/S para navegar e Enter para selecionar, Q para sair)'}")
 
     for i, pokemon in enumerate(pokedex):
-        if i == selecionado:
-            wc.textcolor(wc.BLUE) # Cor texto verde claro
-            print(f"> {pokemon['nome']}")
+        if pokemon['encontrou']:
+            if i == selecionado:
+                wc.textcolor(wc.BLUE) # Cor texto verde claro
+                print(f"> {pokemon['nome']}")
+            else:
+                wc.textcolor(wc.WHITE)
+                print(f"  {pokemon['nome']}")
         else:
-            wc.textcolor(wc.WHITE)
-            print(f"  {pokemon['nome']}")
+            if i == selecionado:
+                wc.textcolor(wc.BLUE)  # Cor texto azul
+                print(f"> ???")
+            else:
+                wc.textcolor(wc.WHITE)
+                print(f"  ???")
+
     wc.textcolor(wc.WHITE) # Cor texto padrão
 
 # Função para exibir os detalhes de um Pokémon
 def mostrar_detalhes(pokemon):
-    wc.clrscr()
-    imagem_ascii = carregar_ascii('src/saves/poke_image.txt', pokemon['imagem_id'])
-    wc.textcolor(wc.RED)
-    print(f"{'Detalhes do Pokémon'}")
-    wc.textcolor(wc.WHITE)
-    print(f"Nome: {pokemon['nome']}")
-    print(f"Tipo: {pokemon['tipo']}")
-    print(f"Descrição: {pokemon['descricao']}")
-    print("Habilidades:")
-    wc.textcolor(wc.LIGHTCYAN)
-    for habilidade in pokemon['habilidades']:
-        print(f"- {habilidade}")
-    wc.textcolor(wc.WHITE)
-    print("Pressione *Espaço* para ver sua Imagem ou *Enter* para Voltar!")
+    if pokemon['encontrou']:
+        wc.clrscr()
+        imagem_ascii = carregar_ascii('src/saves/poke_image.txt', pokemon['nome'])
+        wc.textcolor(wc.RED)
+        print(f"{'Detalhes do Pokémon'}")
+        wc.textcolor(wc.WHITE)
+        print(f"Nome: {pokemon['nome']}")
+        print(f"Tipo: {pokemon['tipo']}")
+        print(f"Descrição: {pokemon['descricao']}")
+        print("Habilidades:")
+        wc.textcolor(wc.LIGHTCYAN)
+        for habilidade in pokemon['habilidades']:
+            print(f"- {habilidade}")
+        wc.textcolor(wc.WHITE)
+        print("Pressione *Espaço* para ver sua Imagem ou *Enter* para Voltar!")
+    else:
+        wc.clrscr()
+        wc.textcolor(wc.RED)
+        print(f"{'Detalhes do Pokémon'}")
+        wc.textcolor(wc.WHITE)
+        print("Pokemon ainda Não Encontrado!")
+        print("Pressione *Enter* para Voltar")
 
     while True:
         if wc.kbhit():
