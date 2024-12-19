@@ -52,7 +52,7 @@ def alinhar_add_margem(integer):
     return
 
 def alinhar_centro(string):
-    string.center(_tamanho_mod_[1])
+    string.center(_TAMANHO_[1])
     pass
 
 def alinhar_esquerda(string):
@@ -63,7 +63,17 @@ def alinhar_direita(string):
     string.rjust(_tamanho_mod_[1])
     pass
 
-def alinhar_justificar():
+def alinhar_justificar(lista_strings):
+    maior = max(lista_strings, key=len)
+    pos_espaços = []
+    
+    # Iguala espaços com a frase mais longa
+    for i in range(len(lista_strings)):
+        if len(i) < maior:
+            for j in range(len(lista_strings[i])):
+                if lista_strings[i][j] == ' ':
+                    pos_espaços.append(j)
+                
     pass
 
 # Funções de geração da tela
