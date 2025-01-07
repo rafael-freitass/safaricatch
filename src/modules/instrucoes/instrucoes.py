@@ -1,5 +1,10 @@
+# Adiciona caminho para 'utils' na busca de módulos
+sys.path.append(os.path.abspath(os.path.join(
+    os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'utils')))
+
+
 # Importações do projeto
-from text_functions import *
+from utils.text_functions import *
 #@todo import controles
 #@todo import timer
 
