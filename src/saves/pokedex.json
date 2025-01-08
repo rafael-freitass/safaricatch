@@ -3,18 +3,28 @@
         "nome": "Pikachu",
         "tipo": "Elétrico",
         "descricao": "Um Pokémon rato elétrico.",
-        "habilidades": ["Choque do Trovão", "Cauda de Ferro"]
+        "habilidades": ["Choque do Trovão", "Cauda de Ferro"],
+        "encontrou": true
     },
     {
         "nome": "Charmander",
         "tipo": "Fogo",
         "descricao": "Um pequeno lagarto com chama na cauda.",
-        "habilidades": ["Lança-Chamas", "Garra de Dragão"]
+        "habilidades": ["Lança-Chamas", "Garra de Dragão"],
+        "encontrou": true
     },
     {
-        "nome": "Bulbasaur",
-        "tipo": "Grama/Veneno",
+        "nome": "Bulbasauro",
+        "tipo": "Grama",
         "descricao": "Um Pokémon inicial que adora luz solar.",
-        "habilidades": ["Folha Navalha", "Chicote de Vinha"]
+        "habilidades": ["Folha Navalha", "Chicote de Vinha"],
+        "encontrou": true
+    },
+    {
+        "nome": "Squirtle",
+        "tipo": "Agua",
+        "descricao": "Um Pokémon inicial que adora agua.",
+        "habilidades": ["Ataque de bolas", "Jato d'agua"],
+        "encontrou": false
     }
 ]

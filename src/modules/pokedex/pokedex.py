@@ -1,9 +1,22 @@
 import WConio2 as wc
-import os
+import winsound
 import json
 import cursor
 
-# Função para exibir a Pokédex com a seta de seleção
+# Função para carregar o arquivo com os ascii dos pokemons
+def carregar_ascii(caminho, nome):
+    try:
+        with open(caminho, 'r', encoding='utf-8') as arquivo:
+            conteudo = arquivo.read()
+            imagens = conteudo.split("\n[")  # Divide o conteúdo em blocos
+            for bloco in imagens:
+                if bloco.startswith(nome):  # Procura pelo ID da imagem
+                    return bloco.split("]\n", 1)[1].strip()  # Retorna a imagem sem o ID
+        return "Imagem não encontrada."
+    except FileNotFoundError:
+        return "Arquivo de imagens não encontrado."
+
+# Função para carregar o json com os dados dos pokemons
 def carregar_pokedex(caminho):
     try:
         with open(caminho, 'r', encoding='utf-8') as arquivo:
@@ -15,47 +28,70 @@ def carregar_pokedex(caminho):
         print("Erro: O arquivo pokedex.json contém erros.")
         return []
 
-# Função para exibir a Pokédex com a seta de seleção e bordas
+# Função para exibir os pokemons
 def mostrar_pokedex(pokedex, selecionado):
-    os.system('cls' if os.name == 'nt' else 'clear')  # Limpa o terminal
-    largura = 50  # Largura da borda
-    print('*' * largura)
-    print(f"*{'Pokédex (Use W/S para navegar e Enter para selecionar, Q para sair)':^{largura-2}}*")
-    print('*' * largura)
+    wc.clrscr()  # Limpa o terminal
+    wc.textcolor(wc.RED) # Cor texto vermelho
+    print(f"{'Pokédex (Use W/S para navegar e Enter para selecionar, Q para sair)'}")
 
     for i, pokemon in enumerate(pokedex):
-        if i == selecionado:
-            linha = f"> {pokemon['nome']}"
+        if pokemon['encontrou']:
+            if i == selecionado:
+                wc.textcolor(wc.BLUE) # Cor texto verde claro
+                print(f"> {pokemon['nome']}")
+            else:
+                wc.textcolor(wc.WHITE)
+                print(f"  {pokemon['nome']}")
         else:
-            linha = f"  {pokemon['nome']}"
-        print(f"* {linha:<{largura-4}} *")  # Alinha os textos à esquerda dentro da borda
+            if i == selecionado:
+                wc.textcolor(wc.BLUE)  # Cor texto azul
+                print(f"> ???")
+            else:
+                wc.textcolor(wc.WHITE)
+                print(f"  ???")
 
-    print('*' * largura)  # Linha de fechamento da borda
+    wc.textcolor(wc.WHITE) # Cor texto padrão
 
-# Função para exibir os detalhes de um Pokémon com bordas
+# Função para exibir os detalhes de um Pokémon
 def mostrar_detalhes(pokemon):
-    os.system('cls' if os.name == 'nt' else 'clear')
-    largura = 50  # Largura da borda
-    print('*' * largura)
-    print(f"*{'Detalhes do Pokémon':^{largura-2}}*")
-    print('*' * largura)
-    print(f"* Nome: {pokemon['nome']:<{largura-10}}*")
-    print(f"* Tipo: {pokemon['tipo']:<{largura-10}}*")
-    print(f"* Descrição: {pokemon['descricao']:<{largura-13}}*")
-    print("* Habilidades:")
-    for habilidade in pokemon['habilidades']:
-        print(f"* - {habilidade:<{largura-6}}*")
-    print('*' * largura)
-    print("\nPressione Enter para voltar...")
+    if pokemon['encontrou']:
+        wc.clrscr()
+        imagem_ascii = carregar_ascii('src/saves/poke_image.txt', pokemon['nome'])
+        wc.textcolor(wc.RED)
+        print(f"{'Detalhes do Pokémon'}")
+        wc.textcolor(wc.WHITE)
+        print(f"Nome: {pokemon['nome']}")
+        print(f"Tipo: {pokemon['tipo']}")
+        print(f"Descrição: {pokemon['descricao']}")
+        print("Habilidades:")
+        wc.textcolor(wc.LIGHTCYAN)
+        for habilidade in pokemon['habilidades']:
+            print(f"- {habilidade}")
+        wc.textcolor(wc.WHITE)
+        print("Pressione *Espaço* para ver sua Imagem ou *Enter* para Voltar!")
+    else:
+        wc.clrscr()
+        wc.textcolor(wc.RED)
+        print(f"{'Detalhes do Pokémon'}")
+        wc.textcolor(wc.WHITE)
+        print("Pokemon ainda Não Encontrado!")
+        print("Pressione *Enter* para Voltar")
+
     while True:
         if wc.kbhit():
             _, key = wc.getch()
-            if key.lower() == '\r':
+            if key.lower() == '\r': # se apertar enter sai
+                winsound.Beep(700, 100)
                 return
+            elif key.lower() == ' ': # se apertar espaço mostra o ascii
+                wc.clrscr()
+                print("\nImagem do Pokémon:")
+                print(imagem_ascii)
+                print("\nPressione Enter para voltar...")
 
 # Função principal
 def main():
-    # Carrega a Pokédex do arquivo JSON
+    # Pokedex recebe as informaçõe do arquivo json
     pokedex = carregar_pokedex('src/saves/pokedex.json')
     if not pokedex:  # Se a Pokédex estiver vazia, encerra o programa
         print("A Pokédex não pôde ser carregada. Encerrando o programa.")
@@ -75,15 +111,19 @@ def main():
             _, symbol = wc.getch()  # Captura a tecla pressionada
 
             if symbol.lower() == 'w':  # Sobe na lista
+                winsound.Beep(500, 100)
                 selecionado = (selecionado - 1) % len(pokedex)
-                atualizar = True  # Define para atualizar a tela
+                atualizar = True  
             elif symbol.lower() == 's':  # Desce na lista
+                winsound.Beep(500, 100)
                 selecionado = (selecionado + 1) % len(pokedex)
-                atualizar = True  # Define para atualizar a tela
+                atualizar = True  
             elif symbol == '\r':  # Enter
+                winsound.Beep(900, 100)
                 mostrar_detalhes(pokedex[selecionado])  # Exibe os detalhes do Pokémon
-                atualizar = True  # Atualiza a tela ao voltar
+                atualizar = True  
             elif symbol.lower() == 'q':  # Sai do programa
+                winsound.Beep(700, 100)
                 break
 
 # Executa o programa
