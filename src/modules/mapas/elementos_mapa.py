@@ -2,7 +2,7 @@
 import WConio2
 
 # Imprime o elemento e retorna à cor padrão
-def imprimir_elemento(elemento: tuple, cor_padrao: int, *pos_set: int):
+def imprimir_elemento(elemento: tuple, cor_padrao = 15, *pos_set: int):
     WConio2.textcolor(elemento[1])
     if (type(elemento[0]) == str):
         print(elemento[0], end='')
