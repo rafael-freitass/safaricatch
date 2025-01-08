@@ -4,11 +4,6 @@ import os
 import re
 
 
-# Adiciona caminho para 'utils' na busca de módulos
-sys.path.append(os.path.abspath(os.path.join(
-    os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'utils')))
-
-
 # Importações do projeto
 from regex import palavra, silaba, pontuacao
 from main import a, b   # @todo mudar essa importação quando alguma página definir o tamanho da matriz
