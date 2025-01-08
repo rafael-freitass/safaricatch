@@ -1,15 +1,13 @@
 import WConio2
 
 def main():
-    score = int(0)
-    pokemon = int(0)
-    comum = int(0)
-    lendario = int(0)
-    x = True
+    score = 0
+    pokemon = 0
+    comum = 0
+    lendario = 0
     
     WConio2.clrscr()
     WConio2.textcolor(WConio2.YELLOW)
-    WConio2.textbackground(WConio2.BLACK)
     
     print("Aperte 'a' pra comum, 's' para lendario, 'p' para parar.")
     print("Score: ", score)
@@ -17,24 +15,20 @@ def main():
     print("Pokemons comuns capturados: ", comum)
     print("Pokemons lendarios capturados: ", lendario)
     
-    while x:
+    while True:
         if WConio2.kbhit():
             tecla = WConio2.getkey()
             
             if tecla == 'a':
                 comum += 1
-                if comum >= 0:
-                    score += 100
-                    if score >= 0:
-                        pokemon += 1
+                score += 100
+                pokemon += 1
             elif tecla == 's':
                 lendario += 1
-                if lendario >= 0:
-                    score += 500
-                    if score >= 0:
-                        pokemon += 1
+                score += 500
+                pokemon += 1
             elif tecla == 'p':
-                x = False
+                break
             
             WConio2.gotoxy(0, 1)
             print(f"Score: {score:<10}")
