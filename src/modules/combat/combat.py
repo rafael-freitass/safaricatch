@@ -24,9 +24,9 @@ def carregar_pokemonASCII(caminho, nome): # abre txt com os ascii
     except FileNotFoundError:
         return "Arquivo de imagens não encontrado."
 
-def carregar_pokemons(caminho): # abre o json da pokedex com info dos pokemon
+def carregar_pokedex(): # abre o json da pokedex com info dos pokemon
     try:
-        with open(caminho, 'r', encoding='utf-8') as arquivo:
+        with open('src/saves/pokedex.json', 'r', encoding='utf-8') as arquivo:
             return json.load(arquivo)
     except FileNotFoundError:
         print("Erro: O arquivo pokedex.json não foi encontrado.")
@@ -34,6 +34,26 @@ def carregar_pokemons(caminho): # abre o json da pokedex com info dos pokemon
     except json.JSONDecodeError:
         print("Erro: O arquivo pokedex.json contém erros.")
         return []
+
+def criar_save(nome_pokemon, pokebola, pokemon_pontos):
+    caminho_save = "src/saves/save.json"
+    dados_novos = {
+        "nome":nome_pokemon,
+        "pokebola": pokebola['name'],
+        "pontos":pokemon_pontos
+    }
+
+    try:
+        with open(caminho_save, 'r', encoding='utf-8') as arquivo:
+            dados_existentes = json.load(arquivo)
+    except (FileNotFoundError, json.JSONDecodeError):
+        dados_existentes = []
+
+    dados_existentes.append(dados_novos)
+
+    with open(caminho_save, 'w', encoding='utf-8') as arquivo:
+        json.dump(dados_existentes, arquivo, indent=4, ensure_ascii=False)
+
 
 def renderizar_combate(pokemon_nome, pokemon_ascii, pokebolas, selecionado): # tela do combate
     wc.clrscr()
@@ -88,7 +108,7 @@ def barra_precisao(): # barra de captura
 
         time.sleep(0.1) # controle de velocidade 
 
-def capturar_pokemon(pokemon_dados, pokebola, pokemon_nome):
+def capturar_pokemon(pokemon_dados, pokebola, pokemon_nome, pokemon_pontos):
     pokemon = None
     for i in pokemon_dados:
         if i['nome'].lower() == pokemon_nome.lower():  
@@ -118,6 +138,7 @@ def capturar_pokemon(pokemon_dados, pokebola, pokemon_nome):
 
     if numero_aleatorio <= probabilidade_final:
         deubom=True
+        criar_save(pokemon_nome, pokebola, pokemon_pontos)
         return f"Parabéns! Você capturou o {pokemon_nome}!", deubom
     else:
         deubom=False
@@ -126,9 +147,10 @@ def capturar_pokemon(pokemon_dados, pokebola, pokemon_nome):
 def main():
     selecionado = 0
     pokeballs = carregar_pokebolas("src/saves/pokeballs.json")
-    pokemon_dados = carregar_pokemons("src/saves/pokedex.json")
+    pokemon_dados = carregar_pokedex()
     pokemon_selecionado = random.choice(pokemon_dados)
     pokemon_nome = pokemon_selecionado["nome"]
+    pokemon_pontos = pokemon_selecionado["pontos"]
     pokemon_ascii = carregar_pokemonASCII("src/saves/poke_image.txt", pokemon_nome)
 
     if not pokeballs:
@@ -159,7 +181,7 @@ def main():
                 winsound.Beep(900, 100)
                 pokebola_escolhida = pokeballs[selecionado]
                 print(f"\nVocê escolheu {pokeballs[selecionado]['name']}!")
-                resultado, deubom = capturar_pokemon(pokemon_dados, pokebola_escolhida, pokemon_nome)
+                resultado, deubom = capturar_pokemon(pokemon_dados, pokebola_escolhida, pokemon_nome, pokemon_pontos)
                 print(resultado)
 
                 if deubom == True:
