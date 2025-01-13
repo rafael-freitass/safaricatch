@@ -93,7 +93,7 @@ def mostrar_detalhes(pokemon):
         print(f"{'Detalhes do Pokémon'}")
         wc.textcolor(wc.WHITE)
         print("Pokemon ainda Não Encontrado!")
-        print("Pressione *Enter* para Voltar")
+        print("\nPressione ENTER para Voltar")
 
     while True:
         if wc.kbhit():
@@ -102,10 +102,16 @@ def mostrar_detalhes(pokemon):
                 winsound.Beep(700, 100)
                 return
             elif key.lower() == ' ': # se apertar espaço mostra o ascii
-                wc.clrscr()
-                print("\nImagem do Pokémon:")
-                print(imagem_ascii)
-                print("\nPressione Enter para voltar...")
+                try:
+                    wc.clrscr()
+                    wc.textcolor(wc.RED)
+                    print("Imagem do Pokémon")
+                    wc.textcolor(wc.WHITE)
+                    print(imagem_ascii)
+                    print("\nPressione ENTER para voltar...")
+                except(UnboundLocalError):
+                    print("Você ainda não descobriu esse Pokémon")
+                    print("\nPressione ENTER para voltar...")
 
 # Função principal
 def main():
