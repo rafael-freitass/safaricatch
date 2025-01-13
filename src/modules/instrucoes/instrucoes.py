@@ -1,7 +1,7 @@
 # Importações de biblioteca
 import os
 import sys
-
+import WConio2 as wc
 
 # Adiciona caminho para 'utils' na busca de módulos
 sys.path.append(os.path.abspath(os.path.join(
@@ -9,12 +9,12 @@ sys.path.append(os.path.abspath(os.path.join(
 
 
 # Importações do projeto
-from text_functions import *
+from utils.text_functions import *
 #@todo import controles
 #@todo import timer
 
 # Geração tela
-def main ():    
+def main():    
     title = 'INSTRUÇÕES'
     mov_direita = 'D'
     mov_esquerda = 'A'
@@ -40,6 +40,15 @@ def main ():
                 container_text(container_textbox(7, 40), instrucaomenu))
     
     impressao_matriz(tela)
+
+    while True:
+         if wc.kbhit():
+            _, tecla = wc.getch()
+            if tecla.lower() == 'q':
+                break
+
+
+
 #@todo corte de página por limite e atualização (funções já implementadas, testagem e ajuste)
 
 #@todo alinhamentos
