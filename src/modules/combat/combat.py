@@ -64,7 +64,6 @@ def criar_save(nome_pokemon, pokebola, pokemon_pontos):
     with open(caminho_save, 'w', encoding='utf-8') as arquivo:
         json.dump(dados_existentes, arquivo, indent=4, ensure_ascii=False)
 
-
 def renderizar_combate(pokemon_nome, pokemon_ascii, pokebolas, selecionado): # tela do combate
     wc.clrscr()
     print(f"Um {pokemon_nome} selvagem apareceu!\n")
@@ -75,14 +74,12 @@ def renderizar_combate(pokemon_nome, pokemon_ascii, pokebolas, selecionado): # t
             print(f"> {i+1}. {pokebola['name']}","."*10, f"qtd: {pokebola['quantidade']}")
         else:
             print(f"  {i+1}. {pokebola['name']}","."*10, f"qtd: {pokebola['quantidade']}")
-    print("\nPressione 'Q' para sair.")
 
 def barra_precisao(): # barra de captura
     largura = 21  
     posicao = 0  
     direcao = 1  
-    ponto_central = largura // 2  
-    marcador = "|" 
+    ponto_central = (largura // 2) 
 
     wc.clrscr()
     print("Pressione ENTER quando o marcador estiver no centro!")
@@ -91,21 +88,28 @@ def barra_precisao(): # barra de captura
     while True:
         wc.gotoxy(0, 2)
     
-        barra = ["-"] * largura # cria a barra
-        barra[posicao] = marcador # coloca o nosso marcador
-
-        for i in range(largura):
-            if i == ponto_central:
-                wc.textcolor(wc.RED)  
-                wc.putch("*")  # coloca o simbolo do centro na cor vermelha
-            else:
-                wc.textcolor(wc.WHITE)  
-                wc.putch(barra[i])  # o restante será branco
+        barra = ["-"] * largura  # cria a barra
         
-        wc.textcolor(wc.WHITE)  
+        # Substitui o símbolo na posição do marcador com a cor correspondente
+        for i in range(largura):
+            if i == posicao:
+                if i == ponto_central:
+                    wc.textcolor(wc.MAGENTA)
+                    wc.putch("*")  # Cor roxa no centro
+                    time.sleep(0.1)
+                else:
+                    wc.textcolor(wc.GREEN)  # Cor verde para o marcador
+                    wc.putch(barra[i])  # Desenha o marcador na cor correta
+            elif i == ponto_central:
+                wc.textcolor(wc.RED)  # Cor vermelha para o símbolo do centro
+                wc.putch("*")
+            else:
+                wc.textcolor(wc.WHITE)  # Cor branca para o restante
+                wc.putch(barra[i])  # Coloca o restante da barra em branco
 
-        posicao += direcao # move o marcador
-        if posicao == 0 or posicao == largura - 1:  # inverte a direção
+        # Move o marcador
+        posicao += direcao
+        if posicao == 0 or posicao == largura - 1:  # Inverte a direção
             direcao *= -1
 
         if wc.kbhit():
@@ -116,7 +120,9 @@ def barra_precisao(): # barra de captura
                 diferenca = abs(posicao - ponto_central)
                 return diferenca
 
-        time.sleep(0.1) # controle de velocidade 
+        time.sleep(0.1)  # Controle de velocidade
+
+
 
 def capturar_pokemon(pokemon_dados, pokebola, pokemon_nome, pokemon_pontos):
     pokemon = None
