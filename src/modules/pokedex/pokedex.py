@@ -16,17 +16,35 @@ def carregar_ascii(caminho, nome):
     except FileNotFoundError:
         return "Arquivo de imagens não encontrado."
 
-# Função para carregar o json com os dados dos pokemons
-def carregar_pokedex(caminho):
+def carregar_save(caminho):
     try:
-        with open(caminho, 'r', encoding='utf-8') as arquivo:
-            return json.load(arquivo)
+        with open(caminho, 'r', encoding='utf-8') as arquivo_save:
+            return json.load(arquivo_save)
+    except FileNotFoundError:
+        return []  # Retorna lista vazia se o arquivo não existir
+    except json.JSONDecodeError:
+        print("Erro: O arquivo save.json contém erros.")
+        return []
+
+# Função para carregar o json com os dados dos pokemons
+def carregar_pokedex(caminho_pokedex, caminho_save):
+    try:
+        with open(caminho_pokedex, 'r', encoding='utf-8') as arquivo:
+            pokedex = json.load(arquivo)
     except FileNotFoundError:
         print("Erro: O arquivo pokedex.json não foi encontrado.")
         return []
     except json.JSONDecodeError:
         print("Erro: O arquivo pokedex.json contém erros.")
         return []
+
+    capturados = carregar_save(caminho_save)
+    nomes_capturados = {pokemon['nome'] for pokemon in capturados}
+    
+    for pokemon in pokedex:
+        pokemon['encontrou'] = pokemon['nome'] in nomes_capturados
+
+    return pokedex
 
 # Função para exibir os pokemons
 def mostrar_pokedex(pokedex, selecionado):
@@ -75,7 +93,7 @@ def mostrar_detalhes(pokemon):
         print(f"{'Detalhes do Pokémon'}")
         wc.textcolor(wc.WHITE)
         print("Pokemon ainda Não Encontrado!")
-        print("Pressione *Enter* para Voltar")
+        print("\nPressione ENTER para Voltar")
 
     while True:
         if wc.kbhit():
@@ -84,15 +102,25 @@ def mostrar_detalhes(pokemon):
                 winsound.Beep(700, 100)
                 return
             elif key.lower() == ' ': # se apertar espaço mostra o ascii
-                wc.clrscr()
-                print("\nImagem do Pokémon:")
-                print(imagem_ascii)
-                print("\nPressione Enter para voltar...")
+                try:
+                    wc.clrscr()
+                    wc.textcolor(wc.RED)
+                    print("Imagem do Pokémon")
+                    wc.textcolor(wc.WHITE)
+                    print(imagem_ascii)
+                    print("\nPressione ENTER para voltar...")
+                except(UnboundLocalError):
+                    print("Você ainda não descobriu esse Pokémon")
+                    print("\nPressione ENTER para voltar...")
 
 # Função principal
 def main():
     # Pokedex recebe as informaçõe do arquivo json
-    pokedex = carregar_pokedex('src/saves/pokedex.json')
+    
+    caminho_pokedex = 'src/saves/pokedex.json'
+    caminho_save = 'src/saves/save.json'
+    
+    pokedex = carregar_pokedex(caminho_pokedex, caminho_save)
     if not pokedex:  # Se a Pokédex estiver vazia, encerra o programa
         print("A Pokédex não pôde ser carregada. Encerrando o programa.")
         return

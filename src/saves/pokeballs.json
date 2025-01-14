@@ -1,0 +1,22 @@
+[
+    {
+        "name":"pokeball",
+        "chance_captura": 1.0,
+        "quantidade": 20
+    },
+    {
+        "name":"greatball",
+        "chance_captura": 1.5,
+        "quantidade": 10
+    },
+    {
+        "name":"ultraball",
+        "chance_captura": 2.0,
+        "quantidade": 5
+    },
+    {
+        "name":"masterball",
+        "chance_captura": 5.0,
+        "quantidade": 1
+    }
+]

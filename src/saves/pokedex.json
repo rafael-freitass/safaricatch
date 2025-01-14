@@ -4,27 +4,31 @@
         "tipo": "Elétrico",
         "descricao": "Um Pokémon rato elétrico.",
         "habilidades": ["Choque do Trovão", "Cauda de Ferro"],
-        "encontrou": true
+        "catch_rate": 50, 
+        "pontos": 100
     },
     {
         "nome": "Charmander",
         "tipo": "Fogo",
         "descricao": "Um pequeno lagarto com chama na cauda.",
         "habilidades": ["Lança-Chamas", "Garra de Dragão"],
-        "encontrou": true
+        "catch_rate": 50,
+        "pontos": 100
     },
     {
         "nome": "Bulbasauro",
         "tipo": "Grama",
         "descricao": "Um Pokémon inicial que adora luz solar.",
         "habilidades": ["Folha Navalha", "Chicote de Vinha"],
-        "encontrou": true
+        "catch_rate": 50,
+        "pontos": 100
     },
     {
         "nome": "Squirtle",
         "tipo": "Agua",
         "descricao": "Um Pokémon inicial que adora agua.",
         "habilidades": ["Ataque de bolas", "Jato d'agua"],
-        "encontrou": false
+        "catch_rate": 50,
+        "pontos": 100
     }
 ]
