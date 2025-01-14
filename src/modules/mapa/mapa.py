@@ -60,7 +60,29 @@ def movimentar_jogador(dI, dJ):
             wc.clrscr()
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
+#     wc.clrscr()
+#     cursor.hide()
+#     inicializar_matriz()
+
+#     while True:
+#         desenhar_tela()
+
+#         if wc.kbhit():
+#             _, key = wc.getch()
+
+#             if key == "w":  # move para cima
+#                 movimentar_jogador(-1, 0)
+#             elif key == "s":  # move para baixo
+#                 movimentar_jogador(1, 0)
+#             elif key == "a":  # move para esquerda
+#                 movimentar_jogador(0, -1)
+#             elif key == "d":  # move apra direita
+#                 movimentar_jogador(0, 1)
+#             elif key == "q":  # sai do jogo
+#                 break
+
+def rodar():
     wc.clrscr()
     cursor.hide()
     inicializar_matriz()
