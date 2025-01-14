@@ -1,6 +1,11 @@
 import WConio2 as wc
 import cursor
 import random
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+from modules.combat import combat
 
 VAZIO = " "
 PAREDE = "#"
@@ -35,15 +40,19 @@ def desenhar_tela():
             if i == jogadorI and j == jogadorJ:
                 wc.textcolor(wc.RED)  # Cor do jogador
                 wc.putch(JOGADOR)
+                wc.textcolor(wc.WHITE)
             elif matriz[i][j] == PAREDE:
                 wc.textcolor(wc.DARKGRAY)  # Cor das paredes
                 wc.putch(PAREDE)
+                wc.textcolor(wc.WHITE)
             elif matriz[i][j] == NAVEGAVEL:
                 wc.textcolor(wc.BROWN)  # Cor das áreas navegáveis
                 wc.putch(NAVEGAVEL)
+                wc.textcolor(wc.WHITE)
             elif matriz[i][j] == MATO:
                 wc.textcolor(wc.GREEN)  # Cor do mato
                 wc.putch(MATO)
+                wc.textcolor(wc.WHITE)
         wc.putch("\n")
 
 def movimentar_jogador(dI, dJ):
@@ -53,34 +62,7 @@ def movimentar_jogador(dI, dJ):
     if matriz[novoI][novoJ] in [NAVEGAVEL, MATO]:
         jogadorI, jogadorJ = novoI, novoJ
         if matriz[novoI][novoJ] == MATO and random.random() < CHANCE_POKEMON:
-            wc.gotoxy(0, maxI + 2)
-            wc.textcolor(wc.YELLOW)
-            print("Você encontrou um Pokémon! Pressione qualquer tecla para continuar.")
-            wc.getch()
-            wc.clrscr()
-
-
-# if __name__ == "__main__":
-#     wc.clrscr()
-#     cursor.hide()
-#     inicializar_matriz()
-
-#     while True:
-#         desenhar_tela()
-
-#         if wc.kbhit():
-#             _, key = wc.getch()
-
-#             if key == "w":  # move para cima
-#                 movimentar_jogador(-1, 0)
-#             elif key == "s":  # move para baixo
-#                 movimentar_jogador(1, 0)
-#             elif key == "a":  # move para esquerda
-#                 movimentar_jogador(0, -1)
-#             elif key == "d":  # move apra direita
-#                 movimentar_jogador(0, 1)
-#             elif key == "q":  # sai do jogo
-#                 break
+            combat.main()
 
 def rodar():
     wc.clrscr()

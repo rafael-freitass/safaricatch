@@ -1,5 +1,8 @@
 import WConio2 as wc
-import json, winsound, cursor, random, time
+import json, winsound, cursor, random, time, sys, os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+from modules.mapa import mapa
 
 def carregar_pokebolas(caminho): # abre o json com info das pokeballs 
     try:
@@ -40,7 +43,8 @@ def criar_save(nome_pokemon, pokebola, pokemon_pontos):
     dados_novos = {
         "nome":nome_pokemon,
         "pokebola": pokebola['name'],
-        "pontos":pokemon_pontos
+        "pontos":pokemon_pontos,
+        "capturas":1
     }
 
     try:
@@ -49,7 +53,13 @@ def criar_save(nome_pokemon, pokebola, pokemon_pontos):
     except (FileNotFoundError, json.JSONDecodeError):
         dados_existentes = []
 
-    dados_existentes.append(dados_novos)
+    pokemon_existente = next((pokemon for pokemon in dados_existentes if pokemon['nome'] == nome_pokemon), None)
+    if pokemon_existente:
+        # Atualiza o contador de pontos
+        pokemon_existente['capturas'] += 1
+    else:
+        # Adiciona um novo Pokémon
+        dados_existentes.append(dados_novos)
 
     with open(caminho_save, 'w', encoding='utf-8') as arquivo:
         json.dump(dados_existentes, arquivo, indent=4, ensure_ascii=False)
@@ -76,7 +86,7 @@ def barra_precisao(): # barra de captura
 
     wc.clrscr()
     print("Pressione ENTER quando o marcador estiver no centro!")
-    time.sleep(1)
+    time.sleep(0.5)
 
     while True:
         wc.gotoxy(0, 2)
@@ -183,17 +193,14 @@ def main():
                 print(f"\nVocê escolheu {pokeballs[selecionado]['name']}!")
                 resultado, deubom = capturar_pokemon(pokemon_dados, pokebola_escolhida, pokemon_nome, pokemon_pontos)
                 print(resultado)
-
                 if deubom == True:
+                    input("\nPressione ENTER pra continuar...")
+                    mapa.rodar()
                     break
                 else:
-                    input("enter pra continuar")
+                    input("\nPressione ENTER pra continuar...")
                     atualizar = True
                     
-
-            elif symbol.lower() == 'q':  # sai do menu
-                winsound.Beep(700, 100)
-                break
 
 if __name__ == "__main__":
     main()
