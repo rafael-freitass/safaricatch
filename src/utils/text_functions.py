@@ -5,12 +5,12 @@ import re
 
 
 # Importações do projeto
-from regex import palavra, silaba, pontuacao
-from main import a, b   # @todo mudar essa importação quando alguma página definir o tamanho da matriz
+from utils.regex import palavra, silaba, pontuacao
+#from main import a, b  @todo mudar essa importação quando alguma página definir o tamanho da matriz
 
 
 # Globais
-_tamanho_mod_ = [a, b]
+_tamanho_mod_ = [20, 20] # valor qualquer para testes 
 _TAMANHO_ = tuple(_tamanho_mod_)
 
 
@@ -344,10 +344,3 @@ def impressao_tela(margem, alinhamento, init, matriz):
         else: 
             for j in range(_TAMANHO_[1]):
                 print(' ')
-
-
-
-        
-# Testes
-if __name__ == "__main__":
-    pass
