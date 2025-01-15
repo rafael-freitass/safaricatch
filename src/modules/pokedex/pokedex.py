@@ -153,6 +153,3 @@ def main():
             elif symbol.lower() == 'q':  # Sai do programa
                 winsound.Beep(700, 100)
                 break
-
-# Executa o programa
-main()
