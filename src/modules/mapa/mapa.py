@@ -19,9 +19,8 @@ jogadorI, jogadorJ = 1, 1
 
 CHANCE_POKEMON = 0.3
 
-matriz = []
 
-def inicializar_matriz():
+def inicializar_matriz(matriz):
     for i in range(maxI):
         linha = []
         for j in range(maxJ):
@@ -33,7 +32,7 @@ def inicializar_matriz():
                 linha.append(NAVEGAVEL)  
         matriz.append(linha)
 
-def desenhar_tela():
+def desenhar_tela(matriz):
     wc.gotoxy(0, 0)
     for i in range(maxI):
         for j in range(maxJ):
@@ -55,7 +54,7 @@ def desenhar_tela():
                 wc.textcolor(wc.WHITE)
         wc.putch("\n")
 
-def movimentar_jogador(dI, dJ):
+def movimentar_jogador(dI, dJ, matriz):
     global jogadorI, jogadorJ
     novoI, novoJ = jogadorI + dI, jogadorJ + dJ
 
@@ -65,23 +64,24 @@ def movimentar_jogador(dI, dJ):
             combat.main()
 
 def rodar():
+    matriz = []
     wc.clrscr()
     cursor.hide()
-    inicializar_matriz()
+    inicializar_matriz(matriz)
 
     while True:
-        desenhar_tela()
+        desenhar_tela(matriz)
 
         if wc.kbhit():
             _, key = wc.getch()
 
             if key == "w":  # move para cima
-                movimentar_jogador(-1, 0)
+                movimentar_jogador(-1, 0, matriz)
             elif key == "s":  # move para baixo
-                movimentar_jogador(1, 0)
+                movimentar_jogador(1, 0, matriz)
             elif key == "a":  # move para esquerda
-                movimentar_jogador(0, -1)
+                movimentar_jogador(0, -1, matriz)
             elif key == "d":  # move apra direita
-                movimentar_jogador(0, 1)
+                movimentar_jogador(0, 1, matriz)
             elif key == "q":  # sai do jogo
                 break

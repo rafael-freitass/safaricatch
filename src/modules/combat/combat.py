@@ -65,7 +65,6 @@ def criar_save(nome_pokemon, pokebola, pokemon_pontos):
         json.dump(dados_existentes, arquivo, indent=4, ensure_ascii=False)
 
 def renderizar_combate(pokemon_nome, pokemon_ascii, pokebolas, selecionado): # tela do combate
-    wc.clrscr()
     print(f"Um {pokemon_nome} selvagem apareceu!\n")
     print(pokemon_ascii)
     print("\nO que deseja usar?\n")
@@ -196,12 +195,14 @@ def main():
             elif symbol == '\r':  # seleciona uma opção
                 winsound.Beep(900, 100)
                 pokebola_escolhida = pokeballs[selecionado]
+                pokeballs[selecionado]['quantidade'] -= 1
+                print(pokeballs[selecionado]['quantidade'])
                 print(f"\nVocê escolheu {pokeballs[selecionado]['name']}!")
                 resultado, deubom = capturar_pokemon(pokemon_dados, pokebola_escolhida, pokemon_nome, pokemon_pontos)
                 print(resultado)
                 if deubom == True:
                     input("\nPressione ENTER pra continuar...")
-                    mapa.rodar()
+                    wc.clrscr()
                     break
                 else:
                     input("\nPressione ENTER pra continuar...")
