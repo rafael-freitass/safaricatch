@@ -14,6 +14,7 @@ from modules.pokedex import pokedex
 def teste(opcao):
     def funcao():
         if opcao == "instrucoes":
+            wc.clrscr()
             instrucoes.main()
         elif opcao == "jogar":
             mapa.rodar()
