@@ -1,6 +1,7 @@
 from multiprocessing import Process, Value
 from time import sleep as t_Sleep
 from math import floor
+import winsound
 
 #! Função para traduzir minutos para segundos
 def segundo_Para_Minuto(tempo): # Tem como parâmetro o tempo a ser traduzido
@@ -33,8 +34,8 @@ def timer_Main():
 
 
 def terminar_Timer():
-#    timer.terminate()
     num.value = 0
+    winsound.Beep(700, 800)
     return False
 
 #! Globais
