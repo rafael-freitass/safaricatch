@@ -3,6 +3,7 @@ import json, winsound, cursor, random, time, sys, os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from modules.mapa import mapa
+from modules.score import score
 
 def carregar_pokebolas(caminho): # abre o json com info das pokeballs 
     try:
@@ -201,6 +202,7 @@ def main():
                 resultado, deubom = capturar_pokemon(pokemon_dados, pokebola_escolhida, pokemon_nome, pokemon_pontos)
                 print(resultado)
                 if deubom == True:
+                    print(f"Score: {score.atualizar_score(pokemon_pontos)}")
                     input("\nPressione ENTER pra continuar...")
                     wc.clrscr()
                     break
