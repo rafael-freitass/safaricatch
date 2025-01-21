@@ -199,7 +199,16 @@ def main(pokeballs: list):
                 pokebola_escolhida = pokeballs[selecionado]
                 if pokeballs[selecionado]['quantidade'] <= 0:
                     print(f"\nSuas pokebolas do tipo {pokeballs[selecionado]['name']} acabaram! Escolha outra opção")
-                    input("\nPressione ENTER para continuar...")
+                    print("\nPressione ENTER para continuar...")
+                    while True:
+                        cursor.hide()
+                        if wc.kbhit():
+                            _, symbol = wc.getch() 
+                            if symbol == '\r':
+                                winsound.Beep(900, 100)
+                                atualizar = True  
+                                break
+                    wc.clrscr()
                     atualizar = True
                     continue
 
