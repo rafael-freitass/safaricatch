@@ -72,11 +72,11 @@
         "pontos": 150
     },    
     {
-        "nome": "Mewtwo",
-        "tipo": "Psíquico",
-        "descricao": "Um Pokémon criado por engenharia genética, com poderes incríveis.",
-        "habilidades": ["Confusão", "Psíquico"],
-        "catch_rate": 20,
-        "pontos": 500
-    }
+        "nome": "Porygon",
+        "tipo": "Normal",
+        "descricao": "Um Pokémon artificial criado com base em programação e dados digitais.",
+        "habilidades": ["Conversão", "Raio Psy"],
+        "catch_rate": 45,
+        "pontos": 150
+    }    
 ]
