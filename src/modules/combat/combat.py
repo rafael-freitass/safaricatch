@@ -122,8 +122,6 @@ def barra_precisao(): # barra de captura
 
         time.sleep(0.1)  # Controle de velocidade
 
-
-
 def capturar_pokemon(pokemon_dados, pokebola, pokemon_nome, pokemon_pontos):
     pokemon = None
     for i in pokemon_dados:

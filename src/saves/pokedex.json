@@ -5,7 +5,7 @@
         "descricao": "Um Pokémon rato elétrico.",
         "habilidades": ["Choque do Trovão", "Cauda de Ferro"],
         "catch_rate": 50, 
-        "pontos": 100
+        "pontos": 120
     },
     {
         "nome": "Charmander",
@@ -30,5 +30,53 @@
         "habilidades": ["Ataque de bolas", "Jato d'agua"],
         "catch_rate": 50,
         "pontos": 100
+    },
+    {
+        "nome": "Eevee",
+        "tipo": "Normal",
+        "descricao": "Um Pokémon que pode evoluir para diversas formas.",
+        "habilidades": ["Investida", "Areia nos Olhos"],
+        "catch_rate": 50,
+        "pontos": 110
+    },
+    {
+        "nome": "Jigglypuff",
+        "tipo": "Normal/Fada",
+        "descricao": "Um Pokémon com uma voz melodiosa que pode fazer inimigos dormir.",
+        "habilidades": ["Canto", "Ataque Corporal"],
+        "catch_rate": 50,
+        "pontos": 130
+    },
+    {
+        "nome": "Psyduck",
+        "tipo": "Água",
+        "descricao": "Um Pokémon que sofre de dores de cabeça crônicas, liberando poderes psíquicos.",
+        "habilidades": ["Confusão", "Arma de Água"],
+        "catch_rate": 50,
+        "pontos": 130
+    },
+    {
+        "nome": "Abra",
+        "tipo": "Psíquico",
+        "descricao": "Um Pokémon que dorme 18 horas por dia e pode se teletransportar ao sentir perigo.",
+        "habilidades": ["Teletransporte", "Confusão"],
+        "catch_rate": 35,
+        "pontos": 150
+    },
+    {
+        "nome": "Ponyta",
+        "tipo": "Fogo",
+        "descricao": "Um Pokémon de aparência equina, com crinas flamejantes.",
+        "habilidades": ["Chama Furacão", "Investida"],
+        "catch_rate": 45,
+        "pontos": 150
+    },    
+    {
+        "nome": "Mewtwo",
+        "tipo": "Psíquico",
+        "descricao": "Um Pokémon criado por engenharia genética, com poderes incríveis.",
+        "habilidades": ["Confusão", "Psíquico"],
+        "catch_rate": 20,
+        "pontos": 500
     }
 ]
