@@ -2,10 +2,12 @@
 import sys
 import os
 import re
+import WConio2 as wc
 
 
 # Importações do projeto
-from utils.regex import palavra, silaba, pontuacao
+from regex import palavra, silaba, pontuacao
+from elementos_mapa import imprimir_elemento_bc
 #from main import a, b  @todo mudar essa importação quando alguma página definir o tamanho da matriz
 
 
@@ -45,13 +47,24 @@ def verificar_str_maior(string):
     
     return True
 
-## Retorna True se a matriz é maior do que a tela verticalmente 
+## Retorna uma tupla com dois bool se a matriz é maior verticalmente e horizontalmente 
 def verificar_matriz_maior(matriz):
     global _tamanho_mod_
-    if (len(matriz) <= _tamanho_mod_[0]):
-        return False
+    altura_largura = []
     
-    return True
+    # Verifica altura
+    if (len(matriz) <= _tamanho_mod_[0]):
+        altura_largura.append(False)
+    else:
+        altura_largura.append(True)
+    
+    # Verifica largura
+    if (len(matriz[0]) <= _tamanho_mod_[1]):
+        altura_largura.append(False)
+    else:
+        altura_largura.append(True)
+    
+    return tuple(altura_largura)
 
 ## Retorna uma lista de strings, separador: última sílaba cabível
 def separar_silaba(string):
@@ -98,22 +111,23 @@ def alinhar_add_margem_tela(integer):
     
     return integer
 
-## Retorna string alinhada ao centro com base no tamanho da tela
-def alinhar_centro(string):
+## Deixa cursor na posição de escrita centralizada na tela
+def alinhar_centro(string: str, coord_y: int):
     global _TAMANHO_
-    return (string.center(_TAMANHO_[1]))
+    x = int((_tamanho_mod_[1] - len(string))/2)
+    wc.gotoxy(x, coord_y)
 
-## Altera string para alinhada à esquerda com base no _tamanho_mod_
-def alinhar_esquerda(string):
-    global _tamanho_mod_
-    string.ljust(_tamanho_mod_[1])
-    pass
+## Deixa cursor na posição de escrita à esquerda na tela
+def alinhar_esquerda(string, coord_y):
+    global _TAMANHO_
+    wc.gotoxy(0, coord_y)
 
-## Altera string para alinhada à direita com base no _tamanho_mod_
-def alinhar_direita(string):
-    global _tamanho_mod_
-    string.rjust(_tamanho_mod_[1])
-    pass
+## Deixa cursor na posição de escrita à direita na tela
+def alinhar_direita(string, coord_y):
+    global _TAMANHO_
+    
+    x = int(_tamanho_mod_[1] - len(string))
+    wc.gotoxy(x, coord_y)
 
 ## Retorna uma lista de strings com mesmo tamanho 
 def alinhar_justificar(lista_strings):
@@ -260,16 +274,19 @@ def comb_container(*matrizes_container):
     return m
 
 ## Retorna uma lista de matrizes que um container pode ter e seu estado
-def divide_content(matriz_container):
-    #@todo fix, bug: adiciona espaços a cada corte (reorganizar o corte)
-    #@todo add '...'
+def divide_content(matriz_container, ismap=False):
     global _tamanho_mod_
+    verif_tamanho = verificar_matriz_maior(matriz_container)
 
-    if (verificar_matriz_maior(matriz_container)):
+    if (verif_tamanho[0] or ismap):
         m = []
         end = 0
 
+        # Divisão vertical da matriz
+        # Itera toda matriz original e gera uma versão cortada na última linha cabível
         for i in range(0, len(matriz_container), _tamanho_mod_[0]):
+
+            # Verifica se mais uma iteração está no limite de índices da matriz 
             if (i + _tamanho_mod_[0] < (len(matriz_container))):
                 end += _tamanho_mod_[0]
             else: 
@@ -277,70 +294,109 @@ def divide_content(matriz_container):
 
             m.append([False, matriz_container[i:end]])
 
-        m[0][0] = True
-        return m
+        # Divisão horizontal da matriz, sem a função separar_sílaba()
+        if (ismap and verif_tamanho[1]):
+            m_horizontal = []
+            count = 0
+
+            # Itera a lista de matrizes
+            for i in range(len(m)):
+                # Reseta variáveis de controle
+                start = 0
+                corte = start + _tamanho_mod_[1]
+                
+                # Repete enquanto houver caracteres na linha
+                while (start < len(m[0][1][0])):
+                    m_horizontal.append([False,[]])
+
+                    # Itera cada matriz
+                    for j in range(len(m[i][1])):
+                        # Verifica se corte está no limite de índices
+                        if (corte < len(m[i][1][j])):
+                            m_horizontal[count][1].append(m[i][1][j][start:corte])
+                        else:
+                            m_horizontal[count][1].append(m[i][1][j][start:])
+
+                    # Atualiza variáveis de controle
+                    count += 1
+                    start += _tamanho_mod_[1]
+                    corte += _tamanho_mod_[1] 
+
+            # Remove listas vazias, se houver
+            for i in range(len(m_horizontal)-1, 0, -1):
+                if (len(m_horizontal[i][1]) == 0):
+                    m_horizontal.pop(i)
+
+            # Set valor inicial True
+            m_horizontal[0][0] = True
+            return m_horizontal
+        
+        else:
+            m[0][0] = True
+            return m
     
     return ([[True, matriz_container]])
 
-## Altera a exibição atual do container ao pressionar qualquer tecla
-##@todo testagem maior
-def att_container(lista_matrizes):
-    for i in range(len(lista_matrizes)):
-        if (lista_matrizes[i][0] and (i < (len(lista_matrizes)-1))):
+## Altera a exibição atual do container para posição específica ou próximo da lista
+def att_container(lista_matrizes, *pos_exibir):
+    if (len(pos_exibir) == 0):
+        for i in range(len(lista_matrizes)):
+            if (lista_matrizes[i][0] and (i < (len(lista_matrizes)-1))):
+                lista_matrizes[i][0] = False
+                lista_matrizes[i+1][0] = True
+                break
+    else:
+        for i in range(len(lista_matrizes)):
             lista_matrizes[i][0] = False
-            lista_matrizes[i+1][0] = True
+        lista_matrizes[pos_exibir[0]][0] = True
 
 ## Retorna uma matriz com o desenho de uma tecla e uma label
-def tecla_com_label(tecla, label):
+def tecla_com_label(tecla: str, label: str):
     tamanho = len(tecla) + 4
     m = container_text(container_retangulo(3, tamanho), tecla.center(tamanho-2))
     m[1] += ' {}'.format(label)
     return m
 
 ## Imprime matriz simples
-def impressao_matriz(matriz):
+def impressao_matriz(matriz, *margem: int):
+    # Itera matriz
     for i in range(len(matriz)):
+        # Adiciona margem caso o argumento tenha sido passado
+        if not(len(margem) == 0):
+            wc.gotoxy(margem[0], i + margem[0])
+        
+        # Itera linha
         for j in range(len(matriz[i])):
             print(matriz[i][j],end= '')
         
+        # Adiciona margem caso o argumento tenha sido passado
+        if not(len(margem) == 0):
+            wc.gotoxy(margem[0], i + margem[0])
+
         print()
 
-## Imprime matriz com múltiplas exibições
-##@todo testagem maior
-def impressao_matriz_m(lista_matrizes):
+## Imprime matriz com múltiplas exibições, retorna a posição de True na lista 
+def impressao_matriz_m(lista_matrizes, ismap=False, *margem):
+    # Itera a lista de matrizes
     for i in range(len(lista_matrizes)):
+        # Verifica se a matriz está ativa (True)
         if (lista_matrizes[i][0]):
+            # Itera cada matriz
             for j in range(len(lista_matrizes[i][1])):
-                for k in range (len(lista_matrizes[i][1][j])):
-                    print(lista_matrizes[i][1][j][k], end=' ')
+                # Adiciona margem caso o argumento tenha sido passado
+                if not(len(margem) == 0):
+                            wc.gotoxy(margem[0], j + margem[0])
                 
+                # Itera cada linha
+                for k in range (len(lista_matrizes[i][1][j])):
+                    if (ismap == True):
+                        imprimir_elemento_bc(lista_matrizes[i][1][j][k])
+                    else:
+                        print(lista_matrizes[i][1][j][k], end='')
+                
+                # Adiciona margem caso o argumento tenha sido passado
+                if not(len(margem) == 0):
+                    wc.gotoxy(margem[0], j + margem[0])
+
                 print()
-
-## Imprime toda a tela
-##@todo função não implementada
-def impressao_tela(margem, alinhamento, init, matriz):
-    alinhar_add_margem_tela(margem)
-    
-    match alinhamento:
-        case 'c'|'centro'|'center'|'centralizar'|'centralizado':
-            alinhar_centro(matriz)
-
-        case 'd'|'direita'|'r'|'right':
-            alinhar_direita(matriz)
-
-        case 'e'|'esquerda'|'l'|'left':
-            alinhar_esquerda(matriz)
-
-        case 'j'|'justificar'|'justify'|'justificado':
-            alinhar_justificar(matriz)
-
-        case _:
-            pass
-        
-    for i in range(_TAMANHO_[0]):
-        if i == init:
-            impressao_matriz(matriz)
-            i += len(matriz)
-        else: 
-            for j in range(_TAMANHO_[1]):
-                print(' ')
+            break
