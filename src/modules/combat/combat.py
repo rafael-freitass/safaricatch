@@ -158,9 +158,8 @@ def capturar_pokemon(pokemon_dados, pokebola, pokemon_nome, pokemon_pontos):
         deubom=False
         return f"O {pokemon_nome} escapou! Tente novamente.", deubom
 
-def main():
+def main(pokeballs: list):
     selecionado = 0
-    pokeballs = carregar_pokebolas("src/saves/pokeballs.json")
     pokemon_dados = carregar_pokedex()
     pokemon_selecionado = random.choice(pokemon_dados)
     pokemon_nome = pokemon_selecionado["nome"]
@@ -193,18 +192,45 @@ def main():
 
             elif symbol == '\r':  # seleciona uma opção
                 winsound.Beep(900, 100)
+                for pokeball in pokeballs:
+                    possui_pokebola = True
+                    pass
+
                 pokebola_escolhida = pokeballs[selecionado]
+                if pokeballs[selecionado]['quantidade'] <= 0:
+                    print(f"\nSuas pokebolas do tipo {pokeballs[selecionado]['name']} acabaram! Escolha outra opção")
+                    input("\nPressione ENTER para continuar...")
+                    atualizar = True
+                    continue
+
                 pokeballs[selecionado]['quantidade'] -= 1
-                
+
                 print(f"\nVocê escolheu {pokeballs[selecionado]['name']}!")
                 resultado, deubom = capturar_pokemon(pokemon_dados, pokebola_escolhida, pokemon_nome, pokemon_pontos)
                 print(resultado)
                 if deubom == True:
-                    input("\nPressione ENTER pra continuar...")
+                    print("\nPressione ENTER pra continuar...")
+                    while True:
+                        cursor.hide()
+                        if wc.kbhit():
+                            _, symbol = wc.getch() 
+                            if symbol == '\r':
+                                winsound.Beep(900, 100)
+                                atualizar = True  
+                                break
                     wc.clrscr()
                     break
                 else:
-                    input("\nPressione ENTER pra continuar...")
+                    print("\nPressione ENTER pra continuar...")
+                    while True:
+                        cursor.hide()
+                        if wc.kbhit():
+                            _, symbol = wc.getch() 
+                            if symbol == '\r':
+                                winsound.Beep(900, 100)
+                                atualizar = True  
+                                break
+                    wc.clrscr()
                     atualizar = True
                     
 

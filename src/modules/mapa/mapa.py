@@ -1,11 +1,47 @@
 import WConio2 as wc
 import cursor
-import random
-import sys
-import os
+import json, os, sys, random
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from modules.combat import combat
+
+
+def carregar_pokebolas(caminho): # abre o json com info das pokeballs 
+    try:
+        with open(caminho, 'r', encoding='utf-8') as arquivo:
+            return json.load(arquivo)
+    except FileNotFoundError:
+        print("Erro: O arquivo pokeballs.json não foi encontrado.")
+        return []
+    except json.JSONDecodeError:
+        print("Erro: O arquivo pokeballs.json contém erros.")
+        return []
+
+pokeball_list = carregar_pokebolas("src/saves/pokeballs.json")
+
+
+# pokeball_list = [
+#     {
+#         "name":"pokeball",
+#         "chance_captura": 1.0,
+#         "quantidade": 20
+#     },
+#     {
+#         "name":"greatball",
+#         "chance_captura": 1.5,
+#         "quantidade": 10
+#     },
+#     {
+#         "name":"ultraball",
+#         "chance_captura": 2.0,
+#         "quantidade": 5
+#     },
+#     {
+#         "name":"masterball",
+#         "chance_captura": 5.0,
+#         "quantidade": 1
+#     }
+# ]
 
 VAZIO = " "
 PAREDE = "#"
@@ -61,7 +97,7 @@ def movimentar_jogador(dI, dJ, matriz):
     if matriz[novoI][novoJ] in [NAVEGAVEL, MATO]:
         jogadorI, jogadorJ = novoI, novoJ
         if matriz[novoI][novoJ] == MATO and random.random() < CHANCE_POKEMON:
-            combat.main()
+            combat.main(pokeball_list)
 
 def rodar():
     matriz = []
