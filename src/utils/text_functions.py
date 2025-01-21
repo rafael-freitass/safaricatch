@@ -321,10 +321,14 @@ def divide_content(matriz_container, ismap=False):
                     count += 1
                     start += _tamanho_mod_[1]
                     corte += _tamanho_mod_[1] 
+            
+                m_horizontal.append([False, 0])
+                count += 1
+
 
             # Remove listas vazias, se houver
             for i in range(len(m_horizontal)-1, 0, -1):
-                if (len(m_horizontal[i][1]) == 0):
+                if ((type(m_horizontal[i][1]) == list) and (len(m_horizontal[i][1]) == 0)):
                     m_horizontal.pop(i)
 
             # Set valor inicial True
@@ -380,7 +384,7 @@ def impressao_matriz_m(lista_matrizes, ismap=False, *margem):
     # Itera a lista de matrizes
     for i in range(len(lista_matrizes)):
         # Verifica se a matriz está ativa (True)
-        if (lista_matrizes[i][0]):
+        if (lista_matrizes[i][0] and (not(type(lista_matrizes[i][1]) == int))):
             # Itera cada matriz
             for j in range(len(lista_matrizes[i][1])):
                 # Adiciona margem caso o argumento tenha sido passado
