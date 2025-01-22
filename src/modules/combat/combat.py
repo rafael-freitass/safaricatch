@@ -2,7 +2,7 @@ import WConio2 as wc
 import json, winsound, cursor, random, time, sys, os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-from modules.mapa import mapa
+from modules.score import score
 
 def carregar_pokebolas(caminho): # abre o json com info das pokeballs 
     try:
@@ -64,16 +64,57 @@ def criar_save(nome_pokemon, pokebola, pokemon_pontos):
     with open(caminho_save, 'w', encoding='utf-8') as arquivo:
         json.dump(dados_existentes, arquivo, indent=4, ensure_ascii=False)
 
-def renderizar_combate(pokemon_nome, pokemon_ascii, pokebolas, selecionado): # tela do combate
+def renderizar_combate(pokemon_nome, pokemon_ascii, pokebolas, selecionado,cor): # tela do combate
     wc.clrscr()
     print(f"Um {pokemon_nome} selvagem apareceu!\n")
+    wc.textcolor(getattr(wc, cor))
     print(pokemon_ascii)
+    wc.textcolor(wc.WHITE)
     print("\nO que deseja usar?\n")
     for i, pokebola in enumerate(pokebolas):
         if selecionado == i:
             print(f"> {i+1}. {pokebola['name']}","."*10, f"qtd: {pokebola['quantidade']}")
         else:
             print(f"  {i+1}. {pokebola['name']}","."*10, f"qtd: {pokebola['quantidade']}")
+
+def animacao_espiral(matriz):
+    maxI = len(matriz)
+    maxJ = len(matriz[0])
+
+    topo, base = 0, maxI - 1
+    esquerda, direita = 0, maxJ - 1
+
+    while topo <= base and esquerda <= direita:
+        # Apagar a linha superior
+        for col in range(esquerda, direita + 1):
+            wc.gotoxy(col, topo)
+            print(" ", end="", flush=True)
+        topo += 1
+
+        # Apagar a coluna direita
+        for linha in range(topo, base + 1):
+            wc.gotoxy(direita, linha)
+            print(" ", end="", flush=True)
+        direita -= 1
+
+        # Apagar a linha inferior
+        if topo <= base:
+            for col in range(direita, esquerda - 1, -1):
+                wc.gotoxy(col, base)
+                print(" ", end="", flush=True)
+            base -= 1
+
+        # Apagar a coluna esquerda
+        if esquerda <= direita:
+            for linha in range(base, topo - 1, -1):
+                wc.gotoxy(esquerda, linha)
+                print(" ", end="", flush=True)
+            esquerda += 1
+
+        time.sleep(0.09)
+
+    # Limpa a tela após a espiral
+    wc.clrscr()
 
 def barra_precisao(): # barra de captura
     largura = 21  
@@ -164,6 +205,7 @@ def main(pokeballs: list):
     pokemon_selecionado = random.choice(pokemon_dados)
     pokemon_nome = pokemon_selecionado["nome"]
     pokemon_pontos = pokemon_selecionado["pontos"]
+    cor = pokemon_selecionado["cor"]
     pokemon_ascii = carregar_pokemonASCII("src/saves/poke_image.txt", pokemon_nome)
 
     if not pokeballs:
@@ -175,7 +217,7 @@ def main(pokeballs: list):
 
     while True:
         if atualizar == True:
-            renderizar_combate(pokemon_nome, pokemon_ascii, pokeballs, selecionado)
+            renderizar_combate(pokemon_nome, pokemon_ascii, pokeballs, selecionado, cor)
             atualizar = False
 
         if wc.kbhit():
@@ -192,9 +234,6 @@ def main(pokeballs: list):
 
             elif symbol == '\r':  # seleciona uma opção
                 winsound.Beep(900, 100)
-                for pokeball in pokeballs:
-                    possui_pokebola = True
-                    pass
 
                 pokebola_escolhida = pokeballs[selecionado]
                 if pokeballs[selecionado]['quantidade'] <= 0:
@@ -215,9 +254,12 @@ def main(pokeballs: list):
                 pokeballs[selecionado]['quantidade'] -= 1
 
                 print(f"\nVocê escolheu {pokeballs[selecionado]['name']}!")
+                time.sleep(1)
                 resultado, deubom = capturar_pokemon(pokemon_dados, pokebola_escolhida, pokemon_nome, pokemon_pontos)
                 print(resultado)
                 if deubom == True:
+                    score.aumentar_score(pokemon_pontos)
+                    print(f"Parabéns você ganhou {pokemon_pontos} pontos!")
                     print("\nPressione ENTER pra continuar...")
                     while True:
                         cursor.hide()

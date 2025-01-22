@@ -5,7 +5,8 @@
         "descricao": "Um Pokémon rato elétrico.",
         "habilidades": ["Choque do Trovão", "Cauda de Ferro"],
         "catch_rate": 50, 
-        "pontos": 120
+        "pontos": 120,
+        "cor":"YELLOW"
     },
     {
         "nome": "Charmander",
@@ -13,7 +14,8 @@
         "descricao": "Um pequeno lagarto com chama na cauda.",
         "habilidades": ["Lança-Chamas", "Garra de Dragão"],
         "catch_rate": 50,
-        "pontos": 100
+        "pontos": 100,
+        "cor":"RED"
     },
     {
         "nome": "Bulbasauro",
@@ -21,7 +23,8 @@
         "descricao": "Um Pokémon inicial que adora luz solar.",
         "habilidades": ["Folha Navalha", "Chicote de Vinha"],
         "catch_rate": 50,
-        "pontos": 100
+        "pontos": 100,
+        "cor":"GREEN"
     },
     {
         "nome": "Squirtle",
@@ -29,7 +32,8 @@
         "descricao": "Um Pokémon inicial que adora agua.",
         "habilidades": ["Ataque de bolas", "Jato d'agua"],
         "catch_rate": 50,
-        "pontos": 100
+        "pontos": 100,
+        "cor":"BLUE"
     },
     {
         "nome": "Eevee",
@@ -37,7 +41,8 @@
         "descricao": "Um Pokémon que pode evoluir para diversas formas.",
         "habilidades": ["Investida", "Areia nos Olhos"],
         "catch_rate": 50,
-        "pontos": 110
+        "pontos": 110,
+        "cor":"BROWN"
     },
     {
         "nome": "Jigglypuff",
@@ -45,7 +50,8 @@
         "descricao": "Um Pokémon com uma voz melodiosa que pode fazer inimigos dormir.",
         "habilidades": ["Canto", "Ataque Corporal"],
         "catch_rate": 50,
-        "pontos": 130
+        "pontos": 130,
+        "cor":"MAGENTA"
     },
     {
         "nome": "Psyduck",
@@ -53,7 +59,8 @@
         "descricao": "Um Pokémon que sofre de dores de cabeça crônicas, liberando poderes psíquicos.",
         "habilidades": ["Confusão", "Arma de Água"],
         "catch_rate": 50,
-        "pontos": 130
+        "pontos": 130,
+        "cor":"YELLOW"
     },
     {
         "nome": "Abra",
@@ -61,7 +68,8 @@
         "descricao": "Um Pokémon que dorme 18 horas por dia e pode se teletransportar ao sentir perigo.",
         "habilidades": ["Teletransporte", "Confusão"],
         "catch_rate": 35,
-        "pontos": 150
+        "pontos": 150,
+        "cor":"YELLOW"
     },
     {
         "nome": "Ponyta",
@@ -69,7 +77,8 @@
         "descricao": "Um Pokémon de aparência equina, com crinas flamejantes.",
         "habilidades": ["Chama Furacão", "Investida"],
         "catch_rate": 45,
-        "pontos": 150
+        "pontos": 150,
+        "cor":"RED"
     },    
     {
         "nome": "Porygon",
@@ -77,6 +86,7 @@
         "descricao": "Um Pokémon artificial criado com base em programação e dados digitais.",
         "habilidades": ["Conversão", "Raio Psy"],
         "catch_rate": 45,
-        "pontos": 150
+        "pontos": 150,
+        "cor":"MAGENTA"
     }    
 ]

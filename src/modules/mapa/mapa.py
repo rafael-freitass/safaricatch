@@ -4,7 +4,7 @@ import json, os, sys, random
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from modules.combat import combat
-
+from modules.score import score
 
 def carregar_pokebolas(caminho): # abre o json com info das pokeballs 
     try:
@@ -17,31 +17,8 @@ def carregar_pokebolas(caminho): # abre o json com info das pokeballs
         print("Erro: O arquivo pokeballs.json contém erros.")
         return []
 
+
 pokeball_list = carregar_pokebolas("src/saves/pokeballs.json")
-
-
-# pokeball_list = [
-#     {
-#         "name":"pokeball",
-#         "chance_captura": 1.0,
-#         "quantidade": 20
-#     },
-#     {
-#         "name":"greatball",
-#         "chance_captura": 1.5,
-#         "quantidade": 10
-#     },
-#     {
-#         "name":"ultraball",
-#         "chance_captura": 2.0,
-#         "quantidade": 5
-#     },
-#     {
-#         "name":"masterball",
-#         "chance_captura": 5.0,
-#         "quantidade": 1
-#     }
-# ]
 
 VAZIO = " "
 PAREDE = "#"
@@ -97,6 +74,7 @@ def movimentar_jogador(dI, dJ, matriz):
     if matriz[novoI][novoJ] in [NAVEGAVEL, MATO]:
         jogadorI, jogadorJ = novoI, novoJ
         if matriz[novoI][novoJ] == MATO and random.random() < CHANCE_POKEMON:
+            combat.animacao_espiral(matriz)
             combat.main(pokeball_list)
 
 def rodar():
@@ -107,7 +85,7 @@ def rodar():
 
     while True:
         desenhar_tela(matriz)
-
+        print(f"score: {score.obter_score_atual()}")
         if wc.kbhit():
             _, key = wc.getch()
 
