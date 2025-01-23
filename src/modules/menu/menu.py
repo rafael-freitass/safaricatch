@@ -9,7 +9,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 
 from modules.instrucoes import instrucoes
 from modules.mapa import mapa
-from modules.score import score
+from modules.pokedex import pokedex
 
 def teste(opcao):
     def funcao():
@@ -18,7 +18,7 @@ def teste(opcao):
         elif opcao == "jogar":
             mapa.rodar()
         elif opcao == "score":
-            score
+            pokedex.main()
             
     return funcao
 

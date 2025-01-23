@@ -4,6 +4,7 @@ import WConio2
 # Imprime o elemento e retorna à cor padrão 
 # se for um elemento com set, necessário informar posição 
 def imprimir_elemento(nome_elemento: str, pos_set = 0, cor_padrao = WConio2.WHITE):
+
     elementos = elementos_ASCII()
 
     # Busca elemento e cor segundo nome
@@ -23,7 +24,6 @@ def imprimir_elemento(nome_elemento: str, pos_set = 0, cor_padrao = WConio2.WHIT
     WConio2.putch(char)
     WConio2.textcolor(cor_padrao)
 
-
 # Retorna um array de definições dos elementos ASCII de mapa no padrão
 # {nome do elemento, caracter ou set de caracteres, cor WConio2}
 def elementos_ASCII():
@@ -37,7 +37,6 @@ def elementos_ASCII():
     a3 = dict(nome='mato_alto', char='M', cor= WConio2.GREEN)
     a4 = dict(nome='mato_baixo', char='m', cor= WConio2.LIGHTGREEN)
     a5 = dict(nome='areia', char='*', cor= WConio2.BROWN)
- 
     ## Elementos com eventos
     a6 = dict(nome='porta', char='A', cor= WConio2.WHITE)
     a7 = dict(nome='portal', char='O', cor= WConio2.WHITE)
