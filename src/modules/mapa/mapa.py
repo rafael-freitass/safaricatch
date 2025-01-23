@@ -20,15 +20,6 @@ from timer import *
 from text_functions import *
 from movimento import *
 
-_score_ = 0
-
-def get_score():
-    global _score_
-    
-    _score_ +=1
-    return _score_
-
-
 def main():
     # Limpeza da tela
     wc.clrscr()
@@ -37,14 +28,14 @@ def main():
     # Impressão fixa
     ## Impressão fora da margem
     titulo = 'SafariCatch'
-    score = 'Pontuação: {}'.format(0)
-    tempo = '{}'.format('03:00')
+    score = 0
+    tempo = '03:00'
     alinhar_centro(titulo, 0)
     print(titulo)
-    alinhar_esquerda(score, 1)
-    print(score)
+    alinhar_esquerda(1)
+    print(f'SCORE: {score}')
     alinhar_direita(tempo, 1)
-    print(tempo)
+    print(f'{tempo}')
 
     ## Impressão dentro da margem
     ### Define o tamanho max para impressão do mapa
@@ -53,35 +44,34 @@ def main():
     mapa = carregar_mapa('mapa.txt')
     ### Reseta a margem
     alinhar_add_margem_tela(0)
-    
-    pos_mapa_atual = encontrar_mapa_atual(mapa)
-    
-    # Impressão dinâmica (atualmente placeholders)
+
     ## Inicialização do mapa e do jogador
     impressao_matriz_m(mapa, True, 2)
+    pos_mapa_atual = encontrar_mapa_atual(mapa)
     origem_jogador(75, 3, 2)
-
     ## Animação de surgimento/início do jogador
     sleep(0.4)
     movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 1, 2)
     sleep(0.4)
     movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 1, 2)
 
-    # Iniciar timer e captura de movimento
-    ## chamar timer
+    # Iniciar timer, captura de movimento e reimpressões
     timer_Main()
+    count = 0
 
-    ## movimento
     while(True):
-        # Reimprime o tempo
-        alinhar_direita(tempo, 1)
-        tempo = '{}'.format(segundo_Para_Minuto(get_NumValue()))
+        # Verifica repetições antes de reimprimir timer
+        if (count%800 ==0):
+            tempo = '{}'.format(segundo_Para_Minuto(num.value))
+            alinhar_direita(tempo, 1)
+            print(tempo)
 
         # Verifica se o tempo não acabou
         if(get_NumValue() == 0):
             terminar_Timer()
             chamar_menu()
 
+        # Continuamente captura tecla
         if wc.kbhit():
             _, key = wc.getch()
 
@@ -123,12 +113,8 @@ def main():
             elif key == "q":  # sai do jogo
                 terminar_Timer()
                 chamar_menu()
-        
-        # Reimprime score
-        score = 'Pontuação: {}'.format(get_score())
-        alinhar_esquerda(score, 1)
-        print(score)
-        
+
+        count += 1
 
 if __name__ == "__main__":
     main()

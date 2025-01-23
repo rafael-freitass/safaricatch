@@ -114,19 +114,18 @@ def alinhar_add_margem_tela(integer):
 ## Deixa cursor na posição de escrita centralizada na tela
 def alinhar_centro(string: str, coord_y: int):
     global _TAMANHO_
-    x = int((_tamanho_mod_[1] - len(string))/2)
+    x = int((_TAMANHO_[1] - len(string))/2)
     wc.gotoxy(x, coord_y)
 
 ## Deixa cursor na posição de escrita à esquerda na tela
-def alinhar_esquerda(string, coord_y):
-    global _TAMANHO_
+def alinhar_esquerda(coord_y):
     wc.gotoxy(0, coord_y)
 
 ## Deixa cursor na posição de escrita à direita na tela
 def alinhar_direita(string, coord_y):
     global _TAMANHO_
     
-    x = _tamanho_mod_[1] - len(string)
+    x = _TAMANHO_[1] - len(string)
     wc.gotoxy(x, coord_y)
 
 ## Retorna uma lista de strings com mesmo tamanho 
