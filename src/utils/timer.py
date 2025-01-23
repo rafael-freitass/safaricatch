@@ -19,7 +19,6 @@ def timer(num):
     num.value = 180 #! Três minutos
     while num.value >= 1:
         t_Sleep(1)
-        print(segundo_Para_Minuto(num.value)) ####!Essa linha é para teste, não é necessária o print, apenas a chamada da função, caso queira testar o timer, modifique o valor de segundos abaixo e retire o "#" do começo da linha
         num.value -= 1
         while num.value <= -2:
             t_Sleep(1)
@@ -30,25 +29,22 @@ def timer(num):
 def get_NumValue():
     return num.value
 
-#def set_NumValue(numero):
-#    num.value = numero
-
 #! Função main, cuidado
 def timer_Main():
-    processo_Timer.start()
+    processo_Timer.start() # Apenas inicia o timer
 
 def pause_Timer():
     global valor_Pausado
-    valor_Pausado = num.value
-    num.value = -3
+    valor_Pausado = num.value # Guarda o valor do tempo atual
+    num.value = -3 # Modifica o valor do timer para entrar em um loop de espera
 
 def despause_Timer():
     global valor_Pausado
-    num.value = valor_Pausado
+    num.value = valor_Pausado # Modifica o valor do timer para o valor que tinha parado anteriormente
 
 def terminar_Timer():
-    num.value = 0
-#    winsound.Beep(700, 800)
+    num.value = 0 # Modifica o valor do timer para 0
+    winsound.Beep(250, 1000) #TODO Lembrar de modificar o som de terminar o timer aqui (retire o import do winsound se não for usar)
     return False
 
 #! Globais
