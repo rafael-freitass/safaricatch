@@ -6,12 +6,20 @@ import winsound
 #! Função para traduzir minutos para segundos
 def segundo_Para_Minuto(tempo): # Tem como parâmetro o tempo a ser traduzido
     minuto = floor(tempo / 60)
-    segundo = str(tempo % 60)
-    minuto = str(minuto)
+    if (tempo % 60) > 9:
+        segundo = str(tempo % 60)
+    elif (tempo % 60) <= 9:
+        segundo = "0" + str(tempo % 60)
+    if (tempo / 60) > 9:
+        minuto = floor(tempo / 60)
+        minuto = str(minuto)
+    elif (tempo / 60) <= 9:
+        minuto = floor(tempo / 60)
+        minuto = "0" + str(minuto)
     if tempo > 59:
-        return minuto + "m : " + segundo + "s" #! 00m : 00s
+        return minuto + ":" + segundo #! 00:00
     else:
-        return segundo + "s" #! 00s
+        return "00:" + segundo #! 00:00
 
 
 #! Esse é o timer
@@ -19,6 +27,7 @@ def timer(num):
     num.value = 180 #! Três minutos
     while num.value >= 1:
         t_Sleep(1)
+        print(segundo_Para_Minuto(num.value))
         num.value -= 1
         while num.value <= -2:
             t_Sleep(1)
