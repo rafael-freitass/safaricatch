@@ -24,10 +24,9 @@ def segundo_Para_Minuto(tempo): # Tem como parâmetro o tempo a ser traduzido
 
 #! Esse é o timer
 def timer(num):
-    num.value = 180 #! Três minutos
+    num.value = 90 #! Um minuto e meio
     while num.value >= 1:
         t_Sleep(1)
-        print(segundo_Para_Minuto(num.value))
         num.value -= 1
         while num.value <= -2:
             t_Sleep(1)
@@ -57,7 +56,7 @@ def terminar_Timer():
     return False
 
 #! Globais
-num = Value('i', 180) #! Três minutos
+num = Value('i', 90) #! Um minuto e meio
 processo_Timer = Process(target=timer, args=(num,))
 valor_Pausado = 0
 
