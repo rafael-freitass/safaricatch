@@ -12,6 +12,7 @@ sys.path.append(os.path.abspath(os.path.join(
 ## Adiciona caminho para 'jogador' na busca de módulos
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname((os.path.dirname(__file__))), 'jogador')))
 
+
 # Importações do projeto
 from map_functions import *
 from timer import *
@@ -105,7 +106,7 @@ def main():
                     movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], -1, 0, 1, portais, 2, mapa)
                     pos_mapa_atual = encontrar_mapa_atual(mapa)
                     
-            elif key == "d":  # move apra direita
+            elif key == "d":  # move para direita
                 # Atualiza variavel limite
                 limite = verificar_limite(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]])
                 if (transicao_mapa(mapa, pos_mapa_atual, limite, encontrar_todos_separadores(mapa), key)):
