@@ -50,6 +50,11 @@ def verificar_colisao(mapa_atual: list, pos_x: int, pos_y: int):
                     
     return False
 
+# Retorna passos
+def get_passos():
+    global _passos_
+    return _passos_
+
 # Retorna uma tupla se jogador está no limite do mapa
 # no padrão (bool, 'x' ou 'y', 1 ou -1)
 def verificar_limite(mapa_atual:list):
@@ -72,11 +77,11 @@ def verificar_limite(mapa_atual:list):
     
     return tuple([False, 0, 0])
 
-# Atualiza visualização e posição do jogador seguindo coordenada 4d
+# Retorna True se teleportou, atualiza visualização e posição do jogador seguindo coordenadas 4d
 def teleporte(mapa:list, coordenada_inicial:list, coordenada_final:list, direcao = 0, mod=0, borda=2):
     global _pos_xy_jogador_
     # usa o primeiro par para identificar se está numa matriz sendo exibida e segundo par para verificar posição do jogador é igual ao ponto de teleporte
-    if ((mapa[coordenada_inicial[0]][0] == True) and (_pos_xy_jogador_ == [coordenada_inicial[2], coordenada_inicial[3]])):
+    if ((mapa[coordenada_inicial[0]][0]) and (_pos_xy_jogador_ == [coordenada_inicial[2], coordenada_inicial[3]])):
         att_container(mapa, mod, coordenada_final[0])
         pause_Timer()
         wc.clrscr()
@@ -86,6 +91,19 @@ def teleporte(mapa:list, coordenada_inicial:list, coordenada_final:list, direcao
         impressao_matriz_m(mapa, True, borda)
         despause_Timer()
         origem_jogador(coordenada_final[2], coordenada_final[3], direcao, borda)
+        return True
+    elif ((mapa[coordenada_final[0]][0] == True) and (_pos_xy_jogador_ == [coordenada_final[2], coordenada_final[3]])):
+        att_container(mapa, (mod*(-1)), coordenada_inicial[0])
+        pause_Timer()
+        wc.clrscr()
+        titulo = 'SafariCatch'
+        alinhar_centro(titulo, 0)
+        print(titulo)
+        impressao_matriz_m(mapa, True, borda)
+        despause_Timer()
+        origem_jogador(coordenada_inicial[2], coordenada_inicial[3], direcao, borda)
+        return True
+    return False
 
 # Altera a global de posição e imprime jogador na posição passada
 def origem_jogador(coord_x: int, coord_y: int, direcao = 0, borda_tela = 2):
@@ -125,7 +143,7 @@ def transicao_mapa(mapa: list, pos_mapa_atual: list, limite: tuple, separadores:
     return False
 
 # Movimentação do jogador com verificações e impressão.
-def movimentar_jogador(mapa_atual, mod_x, mod_y, posicao, borda=2, *mapa):
+def movimentar_jogador(mapa_atual, mod_x, mod_y, posicao, portais= [], borda=2, *mapa):
     global _pos_xy_jogador_
     global _passos_
     
@@ -149,14 +167,26 @@ def movimentar_jogador(mapa_atual, mod_x, mod_y, posicao, borda=2, *mapa):
         # Adiciona no contador de passos
         _passos_ += 1
 
-        if not(mapa_atual[_pos_xy_jogador_[1]][_pos_xy_jogador_[0]] == ' ') and random.random() < _CHANCE_POKEMON_:
-            wc.gotoxy(0, 44)
-            wc.textcolor(wc.YELLOW)
-            print("Você encontrou um Pokémon! Pressione qualquer tecla para continuar.")
-            wc.getch()
-            wc.clrscr()
-            wc.textcolor(wc.WHITE)
-            pause_Timer()
-            combat_main()
+        # Teleporta, se estiver em portal e ainda não tiver feito
+        teleportou = False
+        if not(len(mapa) == 0 and len(portais) == 0) and teleportou == False:
+            teleportou = teleporte(mapa[0], portais[0], portais[2])
+            
+        if not(len(mapa) == 0 and len(portais) == 0) and teleportou == False:
+            teleportou = teleporte(mapa[0], portais[1], portais[3])
+        
+        if teleportou == False:
+            # Gera chance de encontrar pokemon
+            areas = areas_caca()
+            for i in range(len(areas)):
+                if (mapa_atual[_pos_xy_jogador_[1]][_pos_xy_jogador_[0]] == areas[i]) and random.random() < _CHANCE_POKEMON_:
+                    wc.gotoxy(0, 44)
+                    wc.textcolor(wc.YELLOW)
+                    print("Você encontrou um Pokémon! Pressione qualquer tecla para continuar.")
+                    wc.getch()
+                    wc.clrscr()
+                    wc.textcolor(wc.WHITE)
+                    pause_Timer()
+                    combat_main()
 
 

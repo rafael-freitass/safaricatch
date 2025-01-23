@@ -40,12 +40,13 @@ def encontrar_coord_portais(mapa: list):
 
     # Itera lista de matrizes
     for i in range(len(mapa)):
-        # Itera cada matriz
-        for j in range(len(mapa[i][1])):
-            # Itera cada linha
-            for k in range(len(mapa[i][1][j])):
-                if (mapa[i][1][j][k] == portal):
-                    coordenadas.append([i, 1, j, k])
+        if type(mapa[i][1]) == list:
+            # Itera cada matriz
+            for j in range(len(mapa[i][1])):
+                # Itera cada linha
+                for k in range(len(mapa[i][1][j])):
+                    if (mapa[i][1][j][k] == portal):
+                        coordenadas.append([i, 1, k, j])
 
     return coordenadas    
 

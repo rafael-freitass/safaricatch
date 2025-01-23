@@ -88,5 +88,19 @@ def imprimir_elemento_bc(char_elemento: str, cor_padrao = 15):
     WConio2.putch(char)
     WConio2.textcolor(cor_padrao)
 
+# Retorna uma lista com caracteres das áreas possíveis de encontrar pokemons
+def areas_caca():
+    elementos = elementos_ASCII()
+    areas = []
+
+    # Busca elemento e cor segundo nome
+    for i in range(len(elementos)):
+        nome = elementos[i].get('nome')
+        if nome == 'agua' or nome == 'areia' or nome =='mato_alto' or nome == 'mato_baixo':
+            if (type(elementos[i].get('char')) == str):
+                areas.append(elementos[i].get('char'))
+
+    return areas
+
 
 

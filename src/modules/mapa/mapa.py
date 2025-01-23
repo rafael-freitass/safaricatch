@@ -1,5 +1,3 @@
-# mapa.py cria e passa informações da tela de mapa
-
 # Importações de bibliotecas
 import os
 import sys
@@ -29,7 +27,7 @@ def main():
     ## Impressão fora da margem
     titulo = 'SafariCatch'
     score = 0
-    tempo = '03:00'
+    tempo = '01:30'
     alinhar_centro(titulo, 0)
     print(titulo)
     alinhar_esquerda(1)
@@ -48,6 +46,7 @@ def main():
     ## Inicialização do mapa e do jogador
     impressao_matriz_m(mapa, True, 2)
     pos_mapa_atual = encontrar_mapa_atual(mapa)
+    portais = encontrar_coord_portais(mapa)
     origem_jogador(75, 3, 2)
     ## Animação de surgimento/início do jogador
     sleep(0.4)
@@ -81,8 +80,9 @@ def main():
                 if (transicao_mapa(mapa, pos_mapa_atual, limite, encontrar_todos_separadores(mapa), key)):
                     pos_mapa_atual = encontrar_mapa_atual(mapa)
                 else:
-                    movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, -1, 0)
-
+                    movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, -1, 0, portais, 2, mapa)
+                    pos_mapa_atual = encontrar_mapa_atual(mapa)
+                    
 
             elif key == "s":  # move para baixo
                 # Atualiza variavel limite
@@ -90,7 +90,9 @@ def main():
                 if (transicao_mapa(mapa, pos_mapa_atual, limite, encontrar_todos_separadores(mapa), key)):
                     pos_mapa_atual = encontrar_mapa_atual(mapa)
                 else:
-                    movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 1, 2)
+                    movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 1, 2, portais, 2, mapa)
+                    pos_mapa_atual = encontrar_mapa_atual(mapa)
+                    
 
             elif key == "a":  # move para esquerda
                 # Atualiza variavel limite
@@ -100,18 +102,21 @@ def main():
                     pos_mapa_atual = encontrar_mapa_atual(mapa)
                 # Movimenta o jogador
                 else:
-                    movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], -1, 0, 1)
-
+                    movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], -1, 0, 1, portais, 2, mapa)
+                    pos_mapa_atual = encontrar_mapa_atual(mapa)
+                    
             elif key == "d":  # move apra direita
                 # Atualiza variavel limite
                 limite = verificar_limite(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]])
                 if (transicao_mapa(mapa, pos_mapa_atual, limite, encontrar_todos_separadores(mapa), key)):
                     pos_mapa_atual = encontrar_mapa_atual(mapa)
                 else:
-                    movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 1, 0, 3)
-                    
+                    movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 1, 0, 3, portais, 2, mapa)
+                    pos_mapa_atual = encontrar_mapa_atual(mapa)
+
             elif key == "q":  # sai do jogo
                 terminar_Timer()
+                sleep(1)
                 chamar_menu()
 
         count += 1
