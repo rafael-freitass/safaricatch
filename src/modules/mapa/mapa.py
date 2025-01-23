@@ -1,5 +1,3 @@
-# mapa.py cria e passa informações da tela de mapa
-
 # Importações de bibliotecas
 import os
 import sys
@@ -13,6 +11,7 @@ sys.path.append(os.path.abspath(os.path.join(
 
 ## Adiciona caminho para 'jogador' na busca de módulos
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname((os.path.dirname(__file__))), 'jogador')))
+
 
 # Importações do projeto
 from map_functions import *
@@ -102,14 +101,14 @@ def main():
                 else:
                     movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], -1, 0, 1)
 
-            elif key == "d":  # move apra direita
+            elif key == "d":  # move para direita
                 # Atualiza variavel limite
                 limite = verificar_limite(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]])
                 if (transicao_mapa(mapa, pos_mapa_atual, limite, encontrar_todos_separadores(mapa), key)):
                     pos_mapa_atual = encontrar_mapa_atual(mapa)
                 else:
                     movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 1, 0, 3)
-                    
+
             elif key == "q":  # sai do jogo
                 terminar_Timer()
                 chamar_menu()

@@ -1,5 +1,8 @@
 import WConio2 as wc
-import json, winsound, cursor, random, time
+import json, winsound, cursor, random, time, sys, os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+from modules.mapa import mapa
 
 def carregar_pokebolas(caminho): # abre o json com info das pokeballs 
     try:
@@ -40,7 +43,8 @@ def criar_save(nome_pokemon, pokebola, pokemon_pontos):
     dados_novos = {
         "nome":nome_pokemon,
         "pokebola": pokebola['name'],
-        "pontos":pokemon_pontos
+        "pontos":pokemon_pontos,
+        "capturas":1
     }
 
     try:
@@ -49,14 +53,18 @@ def criar_save(nome_pokemon, pokebola, pokemon_pontos):
     except (FileNotFoundError, json.JSONDecodeError):
         dados_existentes = []
 
-    dados_existentes.append(dados_novos)
+    pokemon_existente = next((pokemon for pokemon in dados_existentes if pokemon['nome'] == nome_pokemon), None)
+    if pokemon_existente:
+        # Atualiza o contador de pontos
+        pokemon_existente['capturas'] += 1
+    else:
+        # Adiciona um novo Pokémon
+        dados_existentes.append(dados_novos)
 
     with open(caminho_save, 'w', encoding='utf-8') as arquivo:
         json.dump(dados_existentes, arquivo, indent=4, ensure_ascii=False)
 
-
 def renderizar_combate(pokemon_nome, pokemon_ascii, pokebolas, selecionado): # tela do combate
-    wc.clrscr()
     print(f"Um {pokemon_nome} selvagem apareceu!\n")
     print(pokemon_ascii)
     print("\nO que deseja usar?\n")
@@ -65,37 +73,42 @@ def renderizar_combate(pokemon_nome, pokemon_ascii, pokebolas, selecionado): # t
             print(f"> {i+1}. {pokebola['name']}","."*10, f"qtd: {pokebola['quantidade']}")
         else:
             print(f"  {i+1}. {pokebola['name']}","."*10, f"qtd: {pokebola['quantidade']}")
-    print("\nPressione 'Q' para sair.")
 
 def barra_precisao(): # barra de captura
     largura = 21  
     posicao = 0  
     direcao = 1  
-    ponto_central = largura // 2  
-    marcador = "|" 
+    ponto_central = (largura // 2) 
 
     wc.clrscr()
     print("Pressione ENTER quando o marcador estiver no centro!")
-    time.sleep(1)
+    time.sleep(0.5)
 
     while True:
         wc.gotoxy(0, 2)
     
-        barra = ["-"] * largura # cria a barra
-        barra[posicao] = marcador # coloca o nosso marcador
-
-        for i in range(largura):
-            if i == ponto_central:
-                wc.textcolor(wc.RED)  
-                wc.putch("*")  # coloca o simbolo do centro na cor vermelha
-            else:
-                wc.textcolor(wc.WHITE)  
-                wc.putch(barra[i])  # o restante será branco
+        barra = ["-"] * largura  # cria a barra
         
-        wc.textcolor(wc.WHITE)  
+        # Substitui o símbolo na posição do marcador com a cor correspondente
+        for i in range(largura):
+            if i == posicao:
+                if i == ponto_central:
+                    wc.textcolor(wc.MAGENTA)
+                    wc.putch("*")  # Cor roxa no centro
+                    time.sleep(0.1)
+                else:
+                    wc.textcolor(wc.GREEN)  # Cor verde para o marcador
+                    wc.putch(barra[i])  # Desenha o marcador na cor correta
+            elif i == ponto_central:
+                wc.textcolor(wc.RED)  # Cor vermelha para o símbolo do centro
+                wc.putch("*")
+            else:
+                wc.textcolor(wc.WHITE)  # Cor branca para o restante
+                wc.putch(barra[i])  # Coloca o restante da barra em branco
 
-        posicao += direcao # move o marcador
-        if posicao == 0 or posicao == largura - 1:  # inverte a direção
+        # Move o marcador
+        posicao += direcao
+        if posicao == 0 or posicao == largura - 1:  # Inverte a direção
             direcao *= -1
 
         if wc.kbhit():
@@ -106,7 +119,9 @@ def barra_precisao(): # barra de captura
                 diferenca = abs(posicao - ponto_central)
                 return diferenca
 
-        time.sleep(0.1) # controle de velocidade 
+        time.sleep(0.1)  # Controle de velocidade
+
+
 
 def capturar_pokemon(pokemon_dados, pokebola, pokemon_nome, pokemon_pontos):
     pokemon = None
@@ -180,20 +195,19 @@ def main():
             elif symbol == '\r':  # seleciona uma opção
                 winsound.Beep(900, 100)
                 pokebola_escolhida = pokeballs[selecionado]
+                pokeballs[selecionado]['quantidade'] -= 1
+                print(pokeballs[selecionado]['quantidade'])
                 print(f"\nVocê escolheu {pokeballs[selecionado]['name']}!")
                 resultado, deubom = capturar_pokemon(pokemon_dados, pokebola_escolhida, pokemon_nome, pokemon_pontos)
                 print(resultado)
-
                 if deubom == True:
+                    input("\nPressione ENTER pra continuar...")
+                    wc.clrscr()
                     break
                 else:
-                    input("enter pra continuar")
+                    input("\nPressione ENTER pra continuar...")
                     atualizar = True
                     
-
-            elif symbol.lower() == 'q':  # sai do menu
-                winsound.Beep(700, 100)
-                break
 
 if __name__ == "__main__":
     main()
