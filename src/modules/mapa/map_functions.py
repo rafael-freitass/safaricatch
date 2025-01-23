@@ -3,26 +3,30 @@
 # Importações de bibliotecas
 import os
 import sys
+import WConio2 as wc
 
 # Adição de caminhos
 ## Adiciona caminho para 'utils' na busca de módulos
 sys.path.append(os.path.abspath(os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'utils')))
 
-## Adiciona caminho para 'jogador' na busca de módulos
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname((os.path.dirname(__file__))), 'jogador')))
+## Adiciona caminho para 'menu' na busca de módulos
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname((os.path.dirname(__file__))), 'menu')))
+
 
 # Importações do projeto
 from elementos_mapa import *
 from text_functions import *
+from menu import main as menu_main
 
-# Retorna o mapa como uma lista de matrizes do tamanho da tela
+# Funções de manipulação de mapa
+## Retorna o mapa como uma lista de matrizes do tamanho da tela
 def carregar_mapa(nome_arquivo_mapa: str):
     with open(os.path.abspath(os.path.join(os.path.dirname(__file__), nome_arquivo_mapa))) as arquivo:
         mapa = arquivo.read().split('\n')
         return (divide_content(mapa, True))
         
-# Retorna coordenadas (4d) de todas ocorrências de portal no mapa
+## Retorna coordenadas (4d) de todas ocorrências de portal no mapa
 def encontrar_coord_portais(mapa: list):
     elementos = elementos_ASCII() 
 
@@ -45,15 +49,15 @@ def encontrar_coord_portais(mapa: list):
 
     return coordenadas    
 
-# Retorna coordenadas (2d) do mapa atualmente sendo exibido
+## Retorna coordenadas (2d) do mapa atualmente sendo exibido
 def encontrar_mapa_atual(mapa: list):
     # Itera a lista de matrizes
     for i in range(len(mapa)):
         # Para de iterar ao encontrar mapa atual
         if (mapa[i][0]):
-            return([i, 0])
+            return([i, 1])
 
-# Retorna posição (index) de todos separadores
+## Retorna uma lista com posição (index) de todos separadores
 def encontrar_todos_separadores(mapa: list):
     todos_separadores = []
 
@@ -65,9 +69,9 @@ def encontrar_todos_separadores(mapa: list):
 
     return todos_separadores
 
-# Retorna True se um próximo mapa existe, no sentido 
-# x (horizontal) ou y (vertical), antes (-1) ou após (1) o mapa atual 
-def verificar_transicao_mapa(mapa: list, x_ou_y: str, dir: int):
+## Retorna True se um próximo mapa existe, no sentido 
+## x (horizontal) ou y (vertical), antes (-1) ou após (1) o mapa atual 
+def verificar_transicao_mapa(mapa: list, pos_mapa_atual: list, x_ou_y: str, dir: int):
     pos_mapa_atual = encontrar_mapa_atual(mapa)
     separadores = encontrar_todos_separadores(mapa)
     intervalo_atual = []
@@ -81,7 +85,7 @@ def verificar_transicao_mapa(mapa: list, x_ou_y: str, dir: int):
         intervalo_atual.append((len(mapa)-1))
     else:
         for i in range(len(separadores)-1):
-            if (separadores[i] < pos_mapa_atual and separadores[i+1] > pos_mapa_atual):
+            if (separadores[i] < pos_mapa_atual[0] and separadores[i+1] > pos_mapa_atual[0]):
                 intervalo_atual.append(separadores[i])
                 intervalo_atual.append(separadores[i+1])
                 break
@@ -110,7 +114,7 @@ def verificar_transicao_mapa(mapa: list, x_ou_y: str, dir: int):
     
     return False
 
-# Geração de mapa aleatorio
+## Geração de mapa aleatorio
 def inicializar_matriz():
     for i in range(maxI):
         linha = []
@@ -140,3 +144,13 @@ def desenhar_tela():
                 wc.textcolor(wc.GREEN)  # Cor do mato
                 wc.putch(MATO)
         wc.putch("\n")
+
+# Funções de fluxo/importação
+def chamar_menu():
+    menu_main()
+
+def pause_game():
+    pass
+
+def despause():
+    pass

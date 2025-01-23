@@ -4,15 +4,15 @@ import os
 import re
 import WConio2 as wc
 
+# Adiciona caminho para 'mapa' na busca de módulos
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'modules', 'mapa')))
 
 # Importações do projeto
 from regex import palavra, silaba, pontuacao
 from elementos_mapa import imprimir_elemento_bc
-#from main import a, b  @todo mudar essa importação quando alguma página definir o tamanho da matriz
-
 
 # Globais
-_tamanho_mod_ = [20, 20] # valor qualquer para testes 
+_tamanho_mod_ = [45, 130]
 _TAMANHO_ = tuple(_tamanho_mod_)
 
 
@@ -126,7 +126,7 @@ def alinhar_esquerda(string, coord_y):
 def alinhar_direita(string, coord_y):
     global _TAMANHO_
     
-    x = int(_tamanho_mod_[1] - len(string))
+    x = _tamanho_mod_[1] - len(string)
     wc.gotoxy(x, coord_y)
 
 ## Retorna uma lista de strings com mesmo tamanho 
@@ -342,7 +342,7 @@ def divide_content(matriz_container, ismap=False):
     return ([[True, matriz_container]])
 
 ## Altera a exibição atual do container para posição específica ou próximo da lista
-def att_container(lista_matrizes, *pos_exibir):
+def att_container(lista_matrizes, mod=0, *pos_exibir):
     if (len(pos_exibir) == 0):
         for i in range(len(lista_matrizes)):
             if (lista_matrizes[i][0] and (i < (len(lista_matrizes)-1))):
@@ -352,7 +352,11 @@ def att_container(lista_matrizes, *pos_exibir):
     else:
         for i in range(len(lista_matrizes)):
             lista_matrizes[i][0] = False
-        lista_matrizes[pos_exibir[0]][0] = True
+
+        if type(lista_matrizes[pos_exibir[0]][1]) == int:
+            lista_matrizes[pos_exibir[0]+mod][0] = True
+        else:
+            lista_matrizes[pos_exibir[0]][0] = True
 
 ## Retorna uma matriz com o desenho de uma tecla e uma label
 def tecla_com_label(tecla: str, label: str):
@@ -384,7 +388,7 @@ def impressao_matriz_m(lista_matrizes, ismap=False, *margem):
     # Itera a lista de matrizes
     for i in range(len(lista_matrizes)):
         # Verifica se a matriz está ativa (True)
-        if (lista_matrizes[i][0] and (not(type(lista_matrizes[i][1]) == int))):
+        if (lista_matrizes[i][0]):
             # Itera cada matriz
             for j in range(len(lista_matrizes[i][1])):
                 # Adiciona margem caso o argumento tenha sido passado

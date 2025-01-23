@@ -16,7 +16,7 @@ def teste(opcao):
         if opcao == "instrucoes":
             instrucoes.main()
         elif opcao == "jogar":
-            mapa.rodar()
+            mapa.main()
         elif opcao == "score":
             score
             
@@ -121,4 +121,6 @@ def main():
             elif symbol.lower() == 'q':
                 winsound.Beep(700, 100)
                 break
-main()
+
+if __name__ == "__main__":
+    main()

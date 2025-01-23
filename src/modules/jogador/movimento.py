@@ -8,22 +8,23 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'utils')))
 
-## Adiciona caminho para 'jogador' na busca de módulos
+## Adiciona caminho para 'mapa' na busca de módulos
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname((os.path.dirname(__file__))), 'mapa')))
 
+## Adiciona caminho para 'combat' na busca de módulos
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname((os.path.dirname(__file__))), 'combat')))
+
 # Importações do projeto
-from text_functions import *
 from elementos_mapa import *
-from map_functions import verificar_transicao_mapa
+from text_functions import *
+from timer import *
+from combat import main as combat_main
+
 
 # Globais
-_maxI_ = 20 
-_maxJ_ = 20  
 _pos_xy_jogador_ = [1, 1]
-
-CHANCE_POKEMON = 0.3
-
-matriz = []
+_passos_ = 0
+_CHANCE_POKEMON_ = 0.2
 
 # Retorna True se o elemento no mapa for passável, False se não for passável
 def verificar_colisao(mapa_atual: list, pos_x: int, pos_y: int):
@@ -72,17 +73,19 @@ def verificar_limite(mapa_atual:list):
     return tuple([False, 0, 0])
 
 # Atualiza visualização e posição do jogador seguindo coordenada 4d
-def teleporte(mapa:list, coordenada_1:list, coordenada_2:list):
-    # usa o primeiro par para identificar se está numa matriz sendo exibida 
-    # e segundo par para verificar posição do jogador é igual ao ponto de teleporte
-    if ((coordenada_1[0][1] == True) and (_pos_xy_jogador_ == coordenada1[2][3])):
-        if not(coordenada_1[0][1] == coordenada_2[0][1]):
-            att_container(mapa, coordenada_2[0])
-        _pos_xy_jogador_ = coordenada_2[2][3]
-    elif((coordenada_2[0][1] == True) and (_pos_xy_jogador_ == coordenada2[2][3])):
-        if not(coordenada_2[0][1] == coordenada_1[0][1]):
-            att_container(mapa, coordenada_1[0])
-        _pos_xy_jogador_ = coordenada_1[2][3]
+def teleporte(mapa:list, coordenada_inicial:list, coordenada_final:list, direcao = 0, mod=0, borda=2):
+    global _pos_xy_jogador_
+    # usa o primeiro par para identificar se está numa matriz sendo exibida e segundo par para verificar posição do jogador é igual ao ponto de teleporte
+    if ((mapa[coordenada_inicial[0]][0] == True) and (_pos_xy_jogador_ == [coordenada_inicial[2], coordenada_inicial[3]])):
+        att_container(mapa, mod, coordenada_final[0])
+        pause_Timer()
+        wc.clrscr()
+        titulo = 'SafariCatch'
+        alinhar_centro(titulo, 0)
+        print(titulo)
+        impressao_matriz_m(mapa, True, borda)
+        despause_Timer()
+        origem_jogador(coordenada_final[2], coordenada_final[3], direcao, borda)
 
 # Altera a global de posição e imprime jogador na posição passada
 def origem_jogador(coord_x: int, coord_y: int, direcao = 0, borda_tela = 2):
@@ -95,85 +98,65 @@ def origem_jogador(coord_x: int, coord_y: int, direcao = 0, borda_tela = 2):
     imprimir_elemento_bn('jogador', 15, direcao)
     wc.gotoxy(0, 30)    
 
-# Exibe, reimprime e capta entrada do usuário
-def rodar():
-    wc.clrscr()
-    cursor.hide()
-    inicializar_matriz()
+# Retorna boolean, caso trocou de mapa, verifica e troca de mapa caso jogador esteja no limite entre mapas 
+def transicao_mapa(mapa: list, pos_mapa_atual: list, limite: tuple, separadores: list, key: str):
+    if limite[0]:
+        pos_inicial = [pos_mapa_atual[0], pos_mapa_atual[1], _pos_xy_jogador_[0], _pos_xy_jogador_[1]]
 
-    while True:
-        desenhar_tela()
+        if limite[1] == 'y' and limite[2] == -1 and key == 'w':
+            pos_final = [(pos_inicial[0] - (separadores[0] + 1)), pos_inicial[1], _pos_xy_jogador_[0], (len(mapa[0][1]) -1)]
+            teleporte(mapa, pos_inicial, pos_final, 0, -1)
+            return True
+        elif limite[1] == 'y'and limite[2] == 1 and key == 's':
+            pos_final = [(pos_inicial[0] + (separadores[0] + 1)), pos_inicial[1], _pos_xy_jogador_[0], 0]
+            teleporte(mapa, pos_inicial, pos_final, 2, 1)
+            return True
+        
+        elif limite[1] == 'x' and limite[2] == -1 and key == 'a':
+            pos_final = [pos_inicial[0] - 1, pos_inicial[1], (len(mapa[0][1][0])-1), _pos_xy_jogador_[1]]
+            teleporte(mapa, pos_inicial, pos_final, 1, -1)
+            return True
+        
+        elif limite[1] == 'x' and limite[2] == 1 and key == 'd':
+            pos_final = [pos_inicial[0] + 1, pos_inicial[1], 0, _pos_xy_jogador_[1]]
+            teleporte(mapa, pos_inicial, pos_final, 3, 1)
+            return True
 
-        if wc.kbhit():
-            _, key = wc.getch()
+    return False
 
-            if key == "w":  # move para cima
-                movimentar_jogador(-1, 0)
-            elif key == "s":  # move para baixo
-                movimentar_jogador(1, 0)
-            elif key == "a":  # move para esquerda
-                movimentar_jogador(0, -1)
-            elif key == "d":  # move apra direita
-                movimentar_jogador(0, 1)
-            elif key == "q":  # sai do jogo
-                break
-
-# Movimentação literal, de um em um
-def movimentar_jogador(mapa, mod_x, mod_y, posicao, borda=2):
+# Movimentação do jogador com verificações e impressão.
+def movimentar_jogador(mapa_atual, mod_x, mod_y, posicao, borda=2, *mapa):
     global _pos_xy_jogador_
+    global _passos_
+    
     novo_x = _pos_xy_jogador_[0] + mod_x
     novo_y = _pos_xy_jogador_[1] + mod_y
-    limite = verificar_limite(mapa)
 
-    if (limite[0]):
-        while True:
-            if wc.kbhit():
-                _, key = wc.getch()
-
-                if key == "w":  # move para cima
-                    # Chama mapa anterior y, se houver
-                    if (limite[2] == -1):
-                        if (verificar_transicao_mapa(mapa, limite[1], limite[2])):
-                            teleporte()
-
-                elif key == "s":  # move para baixo
-                    # Chama próximo mapa y, se houver
-                    if (limite[2] == 1):
-                        if (verificar_transicao_mapa(mapa, limite[1], limite[2])):
-                            teleporte()
-                
-                elif key == "a":  # move para esquerda
-                    # Chama mapa anterior x, se houver
-                    if (limite[2] == 1):
-                        if (verificar_transicao_mapa(mapa, limite[1], limite[2])):
-                            teleporte()
-                
-                elif key == "d":  # move apra direita
-                    # Chama próximo mapa x, se houver
-                    if (limite[2] == 1):
-                        if (verificar_transicao_mapa(mapa, limite[1], limite[2])):
-                            teleporte()
-                
-                elif key == "q":  # sai do jogo
-                    break
-
-    if (verificar_colisao(mapa, novo_x, novo_y)):
-        # Sobrepõe cursor antigo com elemento do mapa
+    # Verifica colisão com o mapa_atual antes de mover
+    if (verificar_colisao(mapa_atual, novo_x, novo_y)):
+        # Sobrepõe cursor antigo com elemento do mapa_atual
         wc.gotoxy(_pos_xy_jogador_[0] + borda, _pos_xy_jogador_[1] + borda)
-        imprimir_elemento_bc(mapa[_pos_xy_jogador_[1]][_pos_xy_jogador_[0]])
+        imprimir_elemento_bc(mapa_atual[_pos_xy_jogador_[1]][_pos_xy_jogador_[0]])
         
         # Atualiza posição do jogador
         _pos_xy_jogador_[0] = novo_x 
         _pos_xy_jogador_[1] = novo_y
 
-        # Sobrepõe elemento do mapa com jogador
+        # Sobrepõe elemento do mapa_atual com jogador
         wc.gotoxy(_pos_xy_jogador_[0] + borda, _pos_xy_jogador_[1] + borda)
         imprimir_elemento_bn('jogador', 15, posicao)
 
-        #if matriz[novo_x][novo_y] == MATO and random.random() < CHANCE_POKEMON:
-        #    wc.gotoxy(0, _maxI_ + 2)
-        #    wc.textcolor(wc.YELLOW)
-        #    print("Você encontrou um Pokémon! Pressione qualquer tecla para continuar.")
-        #    wc.getch()
-        #    wc.clrscr()
+        # Adiciona no contador de passos
+        _passos_ += 1
+
+        if not(mapa_atual[_pos_xy_jogador_[1]][_pos_xy_jogador_[0]] == ' ') and random.random() < _CHANCE_POKEMON_:
+            wc.gotoxy(0, 44)
+            wc.textcolor(wc.YELLOW)
+            print("Você encontrou um Pokémon! Pressione qualquer tecla para continuar.")
+            wc.getch()
+            wc.clrscr()
+            wc.textcolor(wc.WHITE)
+            pause_Timer()
+            combat_main()
+
 
