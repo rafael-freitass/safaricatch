@@ -1,3 +1,4 @@
+
 # Importações de bibliotecas
 import os
 import sys
@@ -8,6 +9,7 @@ from time import sleep
 ## Adiciona caminho para 'utils' na busca de módulos
 sys.path.append(os.path.abspath(os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'utils')))
+
 
 ## Adiciona caminho para 'jogador' na busca de módulos
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname((os.path.dirname(__file__))), 'jogador')))
@@ -21,6 +23,7 @@ from movimento import *
 
 def main():
     # Limpeza da tela
+
     wc.clrscr()
     wc.setcursortype(0)
 

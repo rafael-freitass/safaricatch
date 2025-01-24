@@ -71,7 +71,7 @@ def mostrar_pokedex(pokedex, selecionado):
     wc.textcolor(wc.WHITE) # Cor texto padrão
 
 # Função para exibir os detalhes de um Pokémon
-def mostrar_detalhes(pokemon):
+def mostrar_detalhes(pokemon, cor_pokemon):
     if pokemon['encontrou']:
         wc.clrscr()
         imagem_ascii = carregar_ascii('src/saves/poke_image.txt', pokemon['nome'])
@@ -107,7 +107,9 @@ def mostrar_detalhes(pokemon):
                     wc.textcolor(wc.RED)
                     print("Imagem do Pokémon")
                     wc.textcolor(wc.WHITE)
+                    wc.textcolor(getattr(wc, cor_pokemon))
                     print(imagem_ascii)
+                    wc.textcolor(wc.WHITE)
                     print("\nPressione ENTER para voltar...")
                 except(UnboundLocalError):
                     print("Você ainda não descobriu esse Pokémon")
@@ -119,13 +121,13 @@ def main():
     
     caminho_pokedex = 'src/saves/pokedex.json'
     caminho_save = 'src/saves/save.json'
-    
     pokedex = carregar_pokedex(caminho_pokedex, caminho_save)
     if not pokedex:  # Se a Pokédex estiver vazia, encerra o programa
         print("A Pokédex não pôde ser carregada. Encerrando o programa.")
         return
 
     selecionado = 0  # Posição inicial da seta
+
     atualizar = True  # Flag para controle da renderização
 
     while True:
@@ -140,16 +142,25 @@ def main():
 
             if symbol.lower() == 'w':  # Sobe na lista
                 winsound.Beep(500, 100)
+                
                 selecionado = (selecionado - 1) % len(pokedex)
                 atualizar = True  
+
             elif symbol.lower() == 's':  # Desce na lista
                 winsound.Beep(500, 100)
+
                 selecionado = (selecionado + 1) % len(pokedex)
-                atualizar = True  
+                atualizar = True
+
             elif symbol == '\r':  # Enter
                 winsound.Beep(900, 100)
-                mostrar_detalhes(pokedex[selecionado])  # Exibe os detalhes do Pokémon
-                atualizar = True  
+
+                pokemon_selecionado = pokedex[selecionado]
+                cor_pokemon = pokemon_selecionado["cor"]
+                mostrar_detalhes(pokemon_selecionado, cor_pokemon)  # Exibe os detalhes do Pokémon
+                atualizar = True
+
             elif symbol.lower() == 'q':  # Sai do programa
                 winsound.Beep(700, 100)
+                
                 break
