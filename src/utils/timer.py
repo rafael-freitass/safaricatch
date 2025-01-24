@@ -1,37 +1,64 @@
-from multiprocessing import Process
-from time import sleep
+from multiprocessing import Process, Value
+from time import sleep as t_Sleep
 from math import floor
-#import WConio2 as wc
-#TODO Eu não precisei usar o WConio2, mas ele simplesmente não funcionava o import e ainda não sei o que tem de errado, help
+import winsound
 
 #! Função para traduzir minutos para segundos
 def segundo_Para_Minuto(tempo): # Tem como parâmetro o tempo a ser traduzido
-    minuto = floor(tempo / 60) # Precisei sempre arrendondar o número para baixo, e era só feito com esse import de math
-    segundo = str(tempo % 60) # Os segundos são apenas o resto de dividir o tempo por 60
-    minuto = str(minuto) # Necessário traduzir para string, já que não era possível antes, para a formatação do retorno
+    minuto = floor(tempo / 60)
+    if (tempo % 60) > 9:
+        segundo = str(tempo % 60)
+    elif (tempo % 60) <= 9:
+        segundo = "0" + str(tempo % 60)
+    if (tempo / 60) > 9:
+        minuto = floor(tempo / 60)
+        minuto = str(minuto)
+    elif (tempo / 60) <= 9:
+        minuto = floor(tempo / 60)
+        minuto = "0" + str(minuto)
     if tempo > 59:
-        return minuto + "m : " + segundo + "s" #! 00m : 00s ; retorna essa formatação (é uma string) se tiverem minutos
+        return minuto + ":" + segundo #! 00:00
     else:
-        return segundo + "s" #! Retorna 00s (é uma string) se não houverem minutos, posso modificar para os minutos ficarem sempre aparecendo, se necessário
+        return "00:" + segundo #! 00:00
 
-#! Esse é o timer em si, o código de como ele funciona
-def timer(tempo_Segundos): 
-    contador = tempo_Segundos # Não sabia se era uma boa ideia modificar um parâmetro diretamente
-    if contador >= 0: # O timer vai do tempo enviado até zero (quando acaba o jogo)
-        sleep(1) # Ele usa esse método do import time para aguardar um segundo
-#        print(segundo_Para_Minuto(contador)) #########!Essa linha é para teste, não é necessária o print, apenas a chamada da função, caso queira testar o timer, modifique o valor de segundos abaixo e retire o "#" do começo da linha
-        contador -= 1 # Já que se passaram um segundo, ele reduz em um o contador, pois também é uma função recursiva
-        timer(contador) # Chama a si mesma, dando o contador como parâmetro, agora que penso, ainda estou tentando lembrar por que não usei um for loop in range, tinha um motivo bom, juro
-    else:
-        return False # Quando o tempo chega a zero, o timer acaba
+
+#! Esse é o timer
+def timer(num):
+    num.value = 90 #! Um minuto e meio
+    while num.value >= 1:
+        t_Sleep(1)
+        num.value -= 1
+        while num.value <= -2:
+            t_Sleep(1)
+    if num.value <= 1 and num.value >= -1:
+        t_Sleep(1)
+        terminar_Timer()
+
+def get_NumValue():
+    return num.value
 
 #! Função main, cuidado
-def main():
-    tempo_Segundos = 60 # O tempo do timer, pode ser modificado, isso é só um exemplo, ele funciona com qualquer tempo
-    processo_Timer = Process(target=timer, args=(tempo_Segundos,)) # Explico pessoalmente, ou em reunião como funciona, mas basicamente:
-    # Utiliza um dos cores do PC para rodar o timer ao mesmo tempo do jogo, para um não afetar o outro ou tudo ficar no mesmo update loop, mas teria como fazer assim também, se quiser, até onde eu sei, dessa maneira deve ser mais eficiente e tecnicamente correto
-    processo_Timer.start() # Começa o processo, ou seja o timer
+def timer_Main():
+    processo_Timer.start() # Apenas inicia o timer
 
+def pause_Timer():
+    global valor_Pausado
+    valor_Pausado = num.value # Guarda o valor do tempo atual
+    num.value = -3 # Modifica o valor do timer para entrar em um loop de espera
 
-if __name__ == "__main__": # Necessário para o Processing ocorrer em Windows, até hoje não sei porque kkkkkkkk
-    main()
+def despause_Timer():
+    global valor_Pausado
+    num.value = valor_Pausado # Modifica o valor do timer para o valor que tinha parado anteriormente
+
+def terminar_Timer():
+    num.value = 0 # Modifica o valor do timer para 0
+    winsound.Beep(250, 1000) #TODO Lembrar de modificar o som de terminar o timer aqui (retire o import do winsound se não for usar)
+    return False
+
+#! Globais
+num = Value('i', 90) #! Um minuto e meio
+processo_Timer = Process(target=timer, args=(num,))
+valor_Pausado = 0
+
+if __name__ == "__main__": # Necessário para o Processing ocorrer em Windows
+    timer_Main()
