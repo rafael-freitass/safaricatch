@@ -1,11 +1,24 @@
 import WConio2 as wc
 import cursor
-import random
-import sys
-import os
+import json, os, sys, random
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from modules.combat import combat
+from modules.score import score
+
+def carregar_pokebolas(caminho): # abre o json com info das pokeballs 
+    try:
+        with open(caminho, 'r', encoding='utf-8') as arquivo:
+            return json.load(arquivo)
+    except FileNotFoundError:
+        print("Erro: O arquivo pokeballs.json não foi encontrado.")
+        return []
+    except json.JSONDecodeError:
+        print("Erro: O arquivo pokeballs.json contém erros.")
+        return []
+
+
+pokeball_list = carregar_pokebolas("src/saves/pokeballs.json")
 
 VAZIO = " "
 PAREDE = "#"
@@ -61,7 +74,8 @@ def movimentar_jogador(dI, dJ, matriz):
     if matriz[novoI][novoJ] in [NAVEGAVEL, MATO]:
         jogadorI, jogadorJ = novoI, novoJ
         if matriz[novoI][novoJ] == MATO and random.random() < CHANCE_POKEMON:
-            combat.main()
+            combat.animacao_espiral(matriz)
+            combat.main(pokeball_list)
 
 def rodar():
     matriz = []
@@ -71,7 +85,7 @@ def rodar():
 
     while True:
         desenhar_tela(matriz)
-
+        print(f"score: {score.obter_score_atual()}")
         if wc.kbhit():
             _, key = wc.getch()
 

@@ -2,7 +2,7 @@ import WConio2 as wc
 import json, winsound, cursor, random, time, sys, os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-from modules.mapa import mapa
+from modules.score import score
 
 def carregar_pokebolas(caminho): # abre o json com info das pokeballs 
     try:
@@ -38,7 +38,7 @@ def carregar_pokedex(): # abre o json da pokedex com info dos pokemon
         print("Erro: O arquivo pokedex.json contém erros.")
         return []
 
-def criar_save(nome_pokemon, pokebola, pokemon_pontos):
+def criar_save(nome_pokemon, pokebola, pokemon_pontos): # cria json do save
     caminho_save = "src/saves/save.json"
     dados_novos = {
         "nome":nome_pokemon,
@@ -64,15 +64,56 @@ def criar_save(nome_pokemon, pokebola, pokemon_pontos):
     with open(caminho_save, 'w', encoding='utf-8') as arquivo:
         json.dump(dados_existentes, arquivo, indent=4, ensure_ascii=False)
 
-def renderizar_combate(pokemon_nome, pokemon_ascii, pokebolas, selecionado): # tela do combate
+def renderizar_combate(pokemon_nome, pokemon_ascii, pokebolas, selecionado,cor): # tela do combate
+    wc.clrscr()
     print(f"Um {pokemon_nome} selvagem apareceu!\n")
+    wc.textcolor(getattr(wc, cor))
     print(pokemon_ascii)
+    wc.textcolor(wc.WHITE)
     print("\nO que deseja usar?\n")
     for i, pokebola in enumerate(pokebolas):
         if selecionado == i:
             print(f"> {i+1}. {pokebola['name']}","."*10, f"qtd: {pokebola['quantidade']}")
         else:
             print(f"  {i+1}. {pokebola['name']}","."*10, f"qtd: {pokebola['quantidade']}")
+
+def animacao_espiral(matriz): # animação quando acha o pokemon
+    maxI = len(matriz)
+    maxJ = len(matriz[0])
+
+    topo, base = 0, maxI - 1
+    esquerda, direita = 0, maxJ - 1
+
+    while topo <= base and esquerda <= direita:
+        # Apagar a linha superior
+        for col in range(esquerda, direita + 1):
+            wc.gotoxy(col, topo)
+            print(" ", end="", flush=True)
+        topo += 1
+
+        # Apagar a coluna direita
+        for linha in range(topo, base + 1):
+            wc.gotoxy(direita, linha)
+            print(" ", end="", flush=True)
+        direita -= 1
+
+        # Apagar a linha inferior
+        if topo <= base:
+            for col in range(direita, esquerda - 1, -1):
+                wc.gotoxy(col, base)
+                print(" ", end="", flush=True)
+            base -= 1
+
+        # Apagar a coluna esquerda
+        if esquerda <= direita:
+            for linha in range(base, topo - 1, -1):
+                wc.gotoxy(esquerda, linha)
+                print(" ", end="", flush=True)
+            esquerda += 1
+
+        time.sleep(0.09)
+
+    wc.clrscr()
 
 def barra_precisao(): # barra de captura
     largura = 21  
@@ -121,9 +162,14 @@ def barra_precisao(): # barra de captura
 
         time.sleep(0.1)  # Controle de velocidade
 
+def calcular_probabilidade(catch_rate, chance_pokebola, diferenca_precisao):
+    PRECISION_BONUS = {0: 20, 2: 10, 5: 5}  # Bônus baseados na precisão
+    probabilidade = min(100, catch_rate * chance_pokebola)
+    bonus = next((b for p, b in PRECISION_BONUS.items() if diferenca_precisao <= p), 0)
+    probabilidade += bonus
+    return min(100, probabilidade)
 
-
-def capturar_pokemon(pokemon_dados, pokebola, pokemon_nome, pokemon_pontos):
+def capturar_pokemon(pokemon_dados, pokebola, pokemon_nome, pokemon_pontos): # calculo de captura de pokemon
     pokemon = None
     for i in pokemon_dados:
         if i['nome'].lower() == pokemon_nome.lower():  
@@ -135,37 +181,39 @@ def capturar_pokemon(pokemon_dados, pokebola, pokemon_nome, pokemon_pontos):
     catch_rate = pokemon['catch_rate']
     chance_pokebola = pokebola['chance_captura']
 
-    probabilidade_final = min(100, catch_rate * chance_pokebola)
-
     diferenca = barra_precisao()
+    probabilidade_final = calcular_probabilidade(catch_rate, chance_pokebola, diferenca)
 
-    # ajusta a probabilidade com base na precisão
-    if diferenca == 0:
-        probabilidade_final += 20
-    elif diferenca <= 2:
-        probabilidade_final += 10
-    elif diferenca <= 5:
-        probabilidade_final += 5
-
-    probabilidade_final = min(100, probabilidade_final)
-
-    numero_aleatorio = random.uniform(0, 100)
-
-    if numero_aleatorio <= probabilidade_final:
-        deubom=True
+    if random.uniform(0, 100) <= probabilidade_final:
         criar_save(pokemon_nome, pokebola, pokemon_pontos)
-        return f"Parabéns! Você capturou o {pokemon_nome}!", deubom
-    else:
-        deubom=False
-        return f"O {pokemon_nome} escapou! Tente novamente.", deubom
+        return f"Parabéns! Você capturou o {pokemon_nome}!", True, False
 
-def main():
+    if tentar_fuga(catch_rate):        
+        return f"O {pokemon_nome} fugiu!", False, True
+
+    return f"O {pokemon_nome} escapou da captura! Tente novamente.", False, False
+
+def tentar_fuga(catch_rate):
+    fuga_chance = 100 - catch_rate
+    return random.uniform(0, 100) <= fuga_chance
+
+def aguardar_acao():
+    print("\nPressione ENTER para continuar...")
+    while True:
+        cursor.hide()
+        if wc.kbhit():
+            _, symbol = wc.getch()
+            if symbol == '\r':
+                winsound.Beep(900, 100)
+                break
+
+def main(pokeballs: list):
     selecionado = 0
-    pokeballs = carregar_pokebolas("src/saves/pokeballs.json")
     pokemon_dados = carregar_pokedex()
     pokemon_selecionado = random.choice(pokemon_dados)
     pokemon_nome = pokemon_selecionado["nome"]
     pokemon_pontos = pokemon_selecionado["pontos"]
+    cor = pokemon_selecionado["cor"]
     pokemon_ascii = carregar_pokemonASCII("src/saves/poke_image.txt", pokemon_nome)
 
     if not pokeballs:
@@ -177,7 +225,7 @@ def main():
 
     while True:
         if atualizar == True:
-            renderizar_combate(pokemon_nome, pokemon_ascii, pokeballs, selecionado)
+            renderizar_combate(pokemon_nome, pokemon_ascii, pokeballs, selecionado, cor)
             atualizar = False
 
         if wc.kbhit():
@@ -194,19 +242,37 @@ def main():
 
             elif symbol == '\r':  # seleciona uma opção
                 winsound.Beep(900, 100)
+
                 pokebola_escolhida = pokeballs[selecionado]
+                if pokeballs[selecionado]['quantidade'] <= 0:
+                    print(f"\nSuas pokebolas do tipo {pokeballs[selecionado]['name']} acabaram! Escolha outra opção")
+                    aguardar_acao()
+                    wc.clrscr()
+                    atualizar = True
+                    continue
+
                 pokeballs[selecionado]['quantidade'] -= 1
-                print(pokeballs[selecionado]['quantidade'])
+
                 print(f"\nVocê escolheu {pokeballs[selecionado]['name']}!")
-                resultado, deubom = capturar_pokemon(pokemon_dados, pokebola_escolhida, pokemon_nome, pokemon_pontos)
+                time.sleep(1)
+                resultado, deubom, fugiu = capturar_pokemon(pokemon_dados, pokebola_escolhida, pokemon_nome, pokemon_pontos)
                 print(resultado)
-                if deubom == True:
-                    input("\nPressione ENTER pra continuar...")
+
+                if deubom:
+                    score.aumentar_score(pokemon_pontos)
+                    print(f"Você ganhou {pokemon_pontos} pontos!")
+                    aguardar_acao()
                     wc.clrscr()
                     break
                 else:
-                    input("\nPressione ENTER pra continuar...")
-                    atualizar = True
+                    if fugiu:
+                        aguardar_acao()
+                        wc.clrscr()
+                        break
+                    else:
+                        aguardar_acao()
+                        wc.clrscr()
+                        atualizar = True
                     
 
 if __name__ == "__main__":
