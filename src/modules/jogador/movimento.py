@@ -3,6 +3,7 @@ import random
 import WConio2 as wc
 import os
 import sys
+import json
 
 # Adiciona caminho para 'utils' na busca de módulos
 sys.path.append(os.path.abspath(os.path.join(
@@ -15,11 +16,26 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname((os.path.dirname(__
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname((os.path.dirname(__file__))), 'combat')))
 
 # Importações do projeto
-from elementos_mapa import *
-from text_functions import *
-from timer import *
+from modules.mapa import elementos_mapa
+from utils.text_functions import *
+from utils.timer import *
 from combat import main as combat_main
 
+
+
+def carregar_pokebolas(caminho): # abre o json com info das pokeballs 
+    try:
+        with open(caminho, 'r', encoding='utf-8') as arquivo:
+            return json.load(arquivo)
+    except FileNotFoundError:
+        print("Erro: O arquivo pokeballs.json não foi encontrado.")
+        return []
+    except json.JSONDecodeError:
+        print("Erro: O arquivo pokeballs.json contém erros.")
+        return []
+
+
+pokeball_list = carregar_pokebolas("src/saves/pokeballs.json")
 
 # Globais
 _pos_xy_jogador_ = [1, 1]
@@ -28,7 +44,7 @@ _CHANCE_POKEMON_ = 0.2
 
 # Retorna True se o elemento no mapa for passável, False se não for passável
 def verificar_colisao(mapa_atual: list, pos_x: int, pos_y: int):
-    elementos = elementos_ASCII()
+    elementos = elementos_mapa.elementos_ASCII()
     elemento_alvo = mapa_atual[pos_y][pos_x]
 
     # Itera a lista de elementos
@@ -113,7 +129,7 @@ def origem_jogador(coord_x: int, coord_y: int, direcao = 0, borda_tela = 2):
     _pos_xy_jogador_[1] = coord_y
 
     wc.gotoxy(coord_x + borda_tela, coord_y + borda_tela)
-    imprimir_elemento_bn('jogador', 15, direcao)
+    elementos_mapa.imprimir_elemento_bn('jogador', 15, direcao)
     wc.gotoxy(0, 30)    
 
 # Retorna boolean, caso trocou de mapa, verifica e troca de mapa caso jogador esteja no limite entre mapas 
@@ -162,7 +178,7 @@ def movimentar_jogador(mapa_atual, mod_x, mod_y, posicao, portais= [], borda=2, 
 
         # Sobrepõe elemento do mapa_atual com jogador
         wc.gotoxy(_pos_xy_jogador_[0] + borda, _pos_xy_jogador_[1] + borda)
-        imprimir_elemento_bn('jogador', 15, posicao)
+        elementos_mapa.imprimir_elemento_bn('jogador', 15, posicao)
 
         # Adiciona no contador de passos
         _passos_ += 1
@@ -177,7 +193,7 @@ def movimentar_jogador(mapa_atual, mod_x, mod_y, posicao, portais= [], borda=2, 
         
         if teleportou == False:
             # Gera chance de encontrar pokemon
-            areas = areas_caca()
+            areas = elementos_mapa.areas_caca()
             for i in range(len(areas)):
                 if (mapa_atual[_pos_xy_jogador_[1]][_pos_xy_jogador_[0]] == areas[i]) and random.random() < _CHANCE_POKEMON_:
                     wc.gotoxy(0, 44)
@@ -187,6 +203,5 @@ def movimentar_jogador(mapa_atual, mod_x, mod_y, posicao, portais= [], borda=2, 
                     wc.clrscr()
                     wc.textcolor(wc.WHITE)
                     pause_Timer()
-                    combat_main()
-
+                    combat_main(pokeball_list)
 

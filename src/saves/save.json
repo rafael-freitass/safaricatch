@@ -1,0 +1,56 @@
+[
+    {
+        "nome": "Jigglypuff",
+        "pokebola": "masterball",
+        "pontos": 130,
+        "capturas": 2
+    },
+    {
+        "nome": "Eevee",
+        "pokebola": "masterball",
+        "pontos": 110,
+        "capturas": 2
+    },
+    {
+        "nome": "Squirtle",
+        "pokebola": "ultraball",
+        "pontos": 100,
+        "capturas": 3
+    },
+    {
+        "nome": "Psyduck",
+        "pokebola": "masterball",
+        "pontos": 130,
+        "capturas": 2
+    },
+    {
+        "nome": "Ponyta",
+        "pokebola": "masterball",
+        "pontos": 150,
+        "capturas": 2
+    },
+    {
+        "nome": "Porygon",
+        "pokebola": "masterball",
+        "pontos": 150,
+        "capturas": 2
+    },
+    {
+        "nome": "Charmander",
+        "pokebola": "masterball",
+        "pontos": 100,
+        "capturas": 1
+    },
+    {
+        "nome": "Bulbasauro",
+        "pokebola": "masterball",
+        "pontos": 100,
+        "capturas": 3
+    },
+    {
+        "nome": "Pikachu",
+        "pokebola": "ultraball",
+        "pontos": 120,
+        "capturas": 2
+    }
+]

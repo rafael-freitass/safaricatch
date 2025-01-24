@@ -16,7 +16,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname((os.path.dirname(__
 
 # Importações do projeto
 from elementos_mapa import *
-from text_functions import *
+from utils.text_functions import *
 from menu import main as menu_main
 
 # Funções de manipulação de mapa
@@ -114,37 +114,6 @@ def verificar_transicao_mapa(mapa: list, pos_mapa_atual: list, x_ou_y: str, dir:
                 return True
     
     return False
-
-## Geração de mapa aleatorio
-def inicializar_matriz():
-    for i in range(maxI):
-        linha = []
-        for j in range(maxJ):
-            if i == 0 or i == maxI - 1 or j == 0 or j == maxJ - 1:
-                linha.append(PAREDE)  
-            elif random.random() < 0.15:
-                linha.append(MATO)  
-            else:
-                linha.append(NAVEGAVEL)  
-        matriz.append(linha)
-
-def desenhar_tela():
-    wc.gotoxy(0, 0)
-    for i in range(maxI):
-        for j in range(maxJ):
-            if i == jogadorI and j == jogadorJ:
-                wc.textcolor(wc.RED)  # Cor do jogador
-                wc.putch(JOGADOR)
-            elif matriz[i][j] == PAREDE:
-                wc.textcolor(wc.DARKGRAY)  # Cor das paredes
-                wc.putch(PAREDE)
-            elif matriz[i][j] == NAVEGAVEL:
-                wc.textcolor(wc.BROWN)  # Cor das áreas navegáveis
-                wc.putch(NAVEGAVEL)
-            elif matriz[i][j] == MATO:
-                wc.textcolor(wc.GREEN)  # Cor do mato
-                wc.putch(MATO)
-        wc.putch("\n")
 
 # Funções de fluxo/importação
 def chamar_menu():

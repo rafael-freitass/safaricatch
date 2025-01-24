@@ -3,6 +3,8 @@ import json, winsound, cursor, random, time, sys, os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from modules.score import score
+from modules.mapa import mapa
+from utils.timer import *
 
 def carregar_pokebolas(caminho): # abre o json com info das pokeballs 
     try:
@@ -64,7 +66,7 @@ def criar_save(nome_pokemon, pokebola, pokemon_pontos): # cria json do save
     with open(caminho_save, 'w', encoding='utf-8') as arquivo:
         json.dump(dados_existentes, arquivo, indent=4, ensure_ascii=False)
 
-def renderizar_combate(pokemon_nome, pokemon_ascii, pokebolas, selecionado,cor): # tela do combate
+def renderizar_combate(pokemon_nome, pokemon_ascii, pokebolas, selecionado,cor,tempo_atual): # tela do combate
     wc.clrscr()
     print(f"Um {pokemon_nome} selvagem apareceu!\n")
     wc.textcolor(getattr(wc, cor))
@@ -76,6 +78,9 @@ def renderizar_combate(pokemon_nome, pokemon_ascii, pokebolas, selecionado,cor):
             print(f"> {i+1}. {pokebola['name']}","."*10, f"qtd: {pokebola['quantidade']}")
         else:
             print(f"  {i+1}. {pokebola['name']}","."*10, f"qtd: {pokebola['quantidade']}")
+    print(tempo_atual)
+
+
 
 def animacao_espiral(matriz): # animação quando acha o pokemon
     maxI = len(matriz)
@@ -223,9 +228,14 @@ def main(pokeballs: list):
     atualizar = True
     cursor.hide()
 
+    despause_Timer()
+
     while True:
+        tempo = get_NumValue()
+        tempo_atual = segundo_Para_Minuto(tempo)
+
         if atualizar == True:
-            renderizar_combate(pokemon_nome, pokemon_ascii, pokeballs, selecionado, cor)
+            renderizar_combate(pokemon_nome, pokemon_ascii, pokeballs, selecionado, cor, tempo_atual)
             atualizar = False
 
         if wc.kbhit():
@@ -263,11 +273,13 @@ def main(pokeballs: list):
                     print(f"Você ganhou {pokemon_pontos} pontos!")
                     aguardar_acao()
                     wc.clrscr()
+                    mapa.main()
                     break
                 else:
                     if fugiu:
                         aguardar_acao()
                         wc.clrscr()
+                        mapa.main()
                         break
                     else:
                         aguardar_acao()

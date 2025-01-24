@@ -39,11 +39,15 @@ def get_NumValue():
 
 #! Função main, cuidado
 def timer_Main():
-    processo_Timer.start() # Apenas inicia o timer
+    global processo_Timer
+    if not processo_Timer.is_alive():  # Verifica se o processo está em execução
+        processo_Timer = Process(target=timer, args=(num,))
+        processo_Timer.start() # Apenas inicia o timer
 
 def pause_Timer():
     global valor_Pausado
     valor_Pausado = num.value # Guarda o valor do tempo atual
+    guardar_valor_Pausado = valor_Pausado
     num.value = -3 # Modifica o valor do timer para entrar em um loop de espera
 
 def despause_Timer():

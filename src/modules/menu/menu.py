@@ -47,7 +47,7 @@ def carregar_opcoes():
 def mostrar_menu(selecionado, opcoes):
     wc.clrscr()
     wc.textcolor(wc.YELLOW)
-    print("""
+    print(r"""
     ___   _   ____  _   ___   __  __   _  _____  __  _ __
   ,' _/ .' \ / __/.' \ / o | / /,'_/ .' \/_  _/,'_/ /// /
  _\ `. / o // _/ / o //  ,' / // /_ / o / / / / /_ / ` / 
