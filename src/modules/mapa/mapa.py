@@ -99,3 +99,19 @@ def rodar():
                 movimentar_jogador(0, 1, matriz)
             elif key == "q":  # sai do jogo
                 break
+
+def opcoes_sim_e_nao(opcao):
+    pass
+
+def carregar_opcoes_saida(sim, nao):
+    return {
+        """
+|-----------------------------------------------------|
+|             Gostaria de sair do jogo?               | 
+|                        {}                           |
+|                        {}                           |
+|(Aviso caso irá perder o progresso e sobre falhar    |
+| a captura do pokemon caso esteja em combate agora)  |
+|-----------------------------------------------------|             
+""".format(sim, nao)
+}
