@@ -5,6 +5,9 @@ import json, os, sys, random
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from modules.combat import combat
 from modules.score import score
+from modules.menu import menu
+from utils.timer import timer
+#Ainda precisa importar map_functions.py, mas eu não encontrei no código
 
 def carregar_pokebolas(caminho): # abre o json com info das pokeballs 
     try:
@@ -100,16 +103,26 @@ def rodar():
             elif key == "q":  # sai do jogo
                 break
 
-def opcoes_sim_e_nao(opcao):
-    pass
+def chamar_sim():
+    timer.set_NumValue(-3)
+    menu.main()
+
+def chamar_nao():
+    map_functions.despause()
+
+def opcao_sim():
+    return {"SIM": chamar_sim()}
+
+def opcao_nao():
+    return {"NAO": chamar_nao()}
 
 def carregar_opcoes_saida(sim, nao):
     return {
         """
 |-----------------------------------------------------|
 |             Gostaria de sair do jogo?               | 
-|                        {}                           |
-|                        {}                           |
+|                        {}                        |
+|                        {}                        |
 |(Aviso caso irá perder o progresso e sobre falhar    |
 | a captura do pokemon caso esteja em combate agora)  |
 |-----------------------------------------------------|             
