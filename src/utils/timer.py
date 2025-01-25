@@ -25,17 +25,28 @@ def segundo_Para_Minuto(tempo): # Tem como parâmetro o tempo a ser traduzido
 #! Esse é o timer
 def timer(num):
     num.value = 90 #! Um minuto e meio
-    while num.value >= 1:
-        t_Sleep(1)
-        num.value -= 1
-        while num.value <= -2:
+    while True:
+        if num.value == -100:
+            return
+        while num.value >= 1:
             t_Sleep(1)
-    if num.value <= 1 and num.value >= -1:
-        t_Sleep(1)
-        terminar_Timer()
+            num.value -= 1
+        while num.value <= -2 and num.value != -100:
+            t_Sleep(1)
+        if num.value <= 1 and num.value >= -1:
+            terminar_Timer()
+            set_NumValue(-3)
 
-def get_NumValue():
+
+def matar_Timer(): # Faz com que o timer entre n condicional que o termina, 
+    #!NÃO utilizar, exceto extremamente necessário (fechar o jogo por completo, num try except...)
+    set_NumValue(-100)
+
+def get_NumValue(): # Retorna o valor do tempo atual
     return num.value
+
+def set_NumValue(n): # Modifica o valor do tempo do timer ao tempo inserido como parâmetro
+    num.value = n
 
 #! Função main, cuidado
 def timer_Main():
@@ -60,5 +71,9 @@ num = Value('i', 90) #! Um minuto e meio
 processo_Timer = Process(target=timer, args=(num,))
 valor_Pausado = 0
 
-if __name__ == "__main__": # Necessário para o Processing ocorrer em Windows
+'''if __name__ == "__main__": # Necessário para o Processing ocorrer em Windows
     timer_Main()
+    t_Sleep(12)
+    set_NumValue(10) #! Testes
+    t_Sleep(12)
+    matar_Timer()'''
