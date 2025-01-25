@@ -170,7 +170,7 @@ def movimentar_jogador(mapa_atual, mod_x, mod_y, posicao, portais= [], borda=2, 
     if (verificar_colisao(mapa_atual, novo_x, novo_y)):
         # Sobrepõe cursor antigo com elemento do mapa_atual
         wc.gotoxy(_pos_xy_jogador_[0] + borda, _pos_xy_jogador_[1] + borda)
-        imprimir_elemento_bc(mapa_atual[_pos_xy_jogador_[1]][_pos_xy_jogador_[0]])
+        elementos_mapa.imprimir_elemento_bc(mapa_atual[_pos_xy_jogador_[1]][_pos_xy_jogador_[0]])
         
         # Atualiza posição do jogador
         _pos_xy_jogador_[0] = novo_x 

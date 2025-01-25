@@ -15,7 +15,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname((os.path.dirname(__
 
 
 # Importações do projeto
-from elementos_mapa import *
+from modules.mapa import elementos_mapa
 from utils.text_functions import *
 from menu import main as menu_main
 
@@ -28,7 +28,7 @@ def carregar_mapa(nome_arquivo_mapa: str):
         
 ## Retorna coordenadas (4d) de todas ocorrências de portal no mapa
 def encontrar_coord_portais(mapa: list):
-    elementos = elementos_ASCII() 
+    elementos = elementos_mapa.elementos_ASCII() 
 
     # Busca char definido como portal
     for i in range(len(elementos)):

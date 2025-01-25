@@ -29,7 +29,7 @@ def main():
     instrucaomenu = 'Para selecionar opções do menu, utilize as teclas {} e {} para navegar e pressione {} para escolher a opção. Para retornar à etapa anterior, pressione {}. Caso um texto ou tela continue, o que é indicado por "..." pressione {} para ver o restante.'.format(mov_cima, mov_baixo, interagir, sair, proximo)
     
     tela = comb_container(
-                [alinhar_centro(title)],
+                [alinhar_centro(title, 10)],
                 tecla_com_label(mov_cima, 'Mover para cima'),
                 tecla_com_label(mov_esquerda, 'Mover para esquerda'),
                 tecla_com_label(mov_direita, 'Mover para direita'),

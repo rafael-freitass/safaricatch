@@ -4,6 +4,8 @@ import json, winsound, cursor, random, time, sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from modules.score import score
 from modules.mapa import mapa
+from modules.mapa import map_functions
+from modules.jogador import movimento
 from utils.timer import *
 
 def carregar_pokebolas(caminho): # abre o json com info das pokeballs 
@@ -212,6 +214,11 @@ def aguardar_acao():
                 winsound.Beep(900, 100)
                 break
 
+def redesenhar_mapa(mapa_game, pos_mapa_atual, portais):
+    wc.clrscr()
+    mapa.impressao_matriz_m(mapa_game, True, 2)
+    movimento.movimentar_jogador(mapa_game[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 0, 0, portais, 2, mapa_game)
+
 def main(pokeballs: list):
     selecionado = 0
     pokemon_dados = carregar_pokedex()
@@ -220,6 +227,10 @@ def main(pokeballs: list):
     pokemon_pontos = pokemon_selecionado["pontos"]
     cor = pokemon_selecionado["cor"]
     pokemon_ascii = carregar_pokemonASCII("src/saves/poke_image.txt", pokemon_nome)
+    
+    mapa.alinhar_add_margem_tela(2)
+    mapa_game = map_functions.carregar_mapa("mapa.txt")
+    mapa.alinhar_add_margem_tela(0)
 
     if not pokeballs:
         print("Nenhuma Pokébola carregada.")
@@ -273,19 +284,32 @@ def main(pokeballs: list):
                     print(f"Você ganhou {pokemon_pontos} pontos!")
                     aguardar_acao()
                     wc.clrscr()
-                    mapa.main()
+
+
+                    pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa_game)
+                    portais = map_functions.encontrar_coord_portais(mapa_game)
+                    redesenhar_mapa(mapa_game, pos_mapa_atual, portais)
+
+
                     break
                 else:
                     if fugiu:
                         aguardar_acao()
                         wc.clrscr()
-                        mapa.main()
+                        
+                        
+                        pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa_game)
+                        portais = map_functions.encontrar_coord_portais(mapa_game)
+                        redesenhar_mapa(mapa_game, pos_mapa_atual, portais)
+                        
+
                         break
                     else:
                         aguardar_acao()
                         wc.clrscr()
                         atualizar = True
-                    
+
+  
 
 if __name__ == "__main__":
     main()

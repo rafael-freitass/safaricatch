@@ -66,7 +66,6 @@ def main():
         # Verifica se o tempo não acabou
         if get_NumValue() == 0:
             terminar_Timer()
-            map_functions.chamar_menu()
             break  # Saia do loop se o tempo acabar
 
         # Continuamente captura tecla
@@ -106,9 +105,7 @@ def main():
                     pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa)
 
             elif key == "q":  # sai do jogo
-                terminar_Timer()
-                sleep(1)
-                map_functions.chamar_menu()
+                terminar_Timer2()
                 break
 
         count += 1

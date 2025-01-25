@@ -21,7 +21,6 @@ def segundo_Para_Minuto(tempo): # Tem como parâmetro o tempo a ser traduzido
     else:
         return "00:" + segundo #! 00:00
 
-
 #! Esse é o timer
 def timer(num):
     num.value = 90 #! Um minuto e meio
@@ -57,6 +56,10 @@ def despause_Timer():
 def terminar_Timer():
     num.value = 0 # Modifica o valor do timer para 0
     winsound.Beep(250, 1000) #TODO Lembrar de modificar o som de terminar o timer aqui (retire o import do winsound se não for usar)
+    return False
+
+def terminar_Timer2():
+    num.value = 0 # Modifica o valor do timer para 0
     return False
 
 #! Globais

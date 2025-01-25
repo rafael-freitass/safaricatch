@@ -8,8 +8,8 @@ import WConio2 as wc
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'modules', 'mapa')))
 
 # Importações do projeto
-from regex import palavra, silaba, pontuacao
-from elementos_mapa import imprimir_elemento_bc
+from utils.regex import palavra, silaba, pontuacao
+from modules.mapa import elementos_mapa
 
 # Globais
 _tamanho_mod_ = [45, 130]
@@ -397,7 +397,7 @@ def impressao_matriz_m(lista_matrizes, ismap=False, *margem):
                 # Itera cada linha
                 for k in range (len(lista_matrizes[i][1][j])):
                     if (ismap == True):
-                        imprimir_elemento_bc(lista_matrizes[i][1][j][k])
+                        elementos_mapa.imprimir_elemento_bc(lista_matrizes[i][1][j][k])
                     else:
                         print(lista_matrizes[i][1][j][k], end='')
                 
