@@ -7,6 +7,7 @@ from modules.mapa import mapa
 from modules.mapa import map_functions
 from modules.jogador import movimento
 from utils.timer import *
+from utils.text_functions import *
 from saves import gamestate
 
 def set_encontros(num):
@@ -241,6 +242,7 @@ def aguardar_acao():
 
 def redesenhar_mapa(mapa_game, pos_mapa_atual, portais):
     wc.clrscr()
+    att_container(mapa_game, 0, pos_mapa_atual[0])
     mapa.impressao_matriz_m(mapa_game, True, 2)
     movimento.movimentar_jogador(mapa_game[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 0, 0, portais, 2, mapa_game)
 

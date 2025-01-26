@@ -21,15 +21,15 @@ from modules.mapa import elementos_mapa
 from utils.text_functions import *
 from utils.timer import *
 from modules.score import score
+
 from combat import animacao_espiral, carregar_pokebolas, main as combat_main
 from modules.combat import combat
-
 
 # Globais
 _pos_xy_jogador_ = [1, 1]
 _passos_ = 0
 _CHANCE_POKEMON_ = 0.12
-_pokeball_list_ = carregar_pokebolas("src/saves/pokeballs.json")
+_pokeball_list_ = combat.carregar_pokebolas("src/saves/pokeballs.json")
 
 def carregar_pokebolas(caminho): # abre o json com info das pokeballs 
     try:
@@ -214,7 +214,6 @@ def movimentar_jogador(mapa_atual, mod_x, mod_y, posicao, portais= [], borda=2, 
                     wc.textcolor(wc.WHITE)
                     pause_Timer()
                     combat.animacao_espiral(mapa_atual)
-
                     # Chama combate
                     combat_main(_pokeball_list_)
                     # Reimprime valor de score
