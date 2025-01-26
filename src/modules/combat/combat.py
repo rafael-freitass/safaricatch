@@ -109,8 +109,6 @@ def renderizar_combate(pokemon_nome, pokemon_ascii, pokebolas, selecionado,cor,t
             print(f"  {i+1}. {pokebola['name']}","."*10, f"qtd: {pokebola['quantidade']}")
     print(tempo_atual)
 
-
-
 def animacao_espiral(matriz, borda = 2): # animação quando acha o pokemon
     maxI = len(matriz)
     maxJ = len(matriz[0])
