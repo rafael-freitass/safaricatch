@@ -69,14 +69,11 @@ def terminar_Timer():
     winsound.Beep(250, 1000) #TODO Lembrar de modificar o som de terminar o timer aqui (retire o import do winsound se não for usar)
     return False
 
-def terminar_Timer2():
-    num.value = 0 # Modifica o valor do timer para 0
-    return False
 
 #! Globais
 num = Value('i', 90) #! Um minuto e meio
 processo_Timer = Process(target=timer, args=(num,))
 valor_Pausado = 0
 
-'''if __name__ == "__main__": # Necessário para o Processing ocorrer em Windows
+if __name__ == "__main__": # Necessário para o Processing ocorrer em Windows
     timer_Main()

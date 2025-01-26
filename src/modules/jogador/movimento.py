@@ -19,9 +19,15 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname((os.path.dirname(__
 from modules.mapa import elementos_mapa
 from utils.text_functions import *
 from utils.timer import *
-from combat import main as combat_main
+from modules.score import score
+from combat import carregar_pokebolas, main as combat_main
 
 
+# Globais
+_pos_xy_jogador_ = [1, 1]
+_passos_ = 0
+_CHANCE_POKEMON_ = 0.12
+_pokeball_list_ = carregar_pokebolas("src/saves/pokeballs.json")
 
 def carregar_pokebolas(caminho): # abre o json com info das pokeballs 
     try:
@@ -33,14 +39,6 @@ def carregar_pokebolas(caminho): # abre o json com info das pokeballs
     except json.JSONDecodeError:
         print("Erro: O arquivo pokeballs.json contém erros.")
         return []
-
-
-pokeball_list = carregar_pokebolas("src/saves/pokeballs.json")
-
-# Globais
-_pos_xy_jogador_ = [1, 1]
-_passos_ = 0
-_CHANCE_POKEMON_ = 0.2
 
 # Retorna True se o elemento no mapa for passável, False se não for passável
 def verificar_colisao(mapa_atual: list, pos_x: int, pos_y: int):
@@ -70,6 +68,11 @@ def verificar_colisao(mapa_atual: list, pos_x: int, pos_y: int):
 def get_passos():
     global _passos_
     return _passos_
+
+# Reseta passos
+def reset_passos():
+    global _passos_
+    _passos_ = 0
 
 # Retorna uma tupla se jogador está no limite do mapa
 # no padrão (bool, 'x' ou 'y', 1 ou -1)
@@ -104,6 +107,8 @@ def teleporte(mapa:list, coordenada_inicial:list, coordenada_final:list, direcao
         titulo = 'SafariCatch'
         alinhar_centro(titulo, 0)
         print(titulo)
+        alinhar_esquerda(1)
+        print(f'SCORE: {score.obter_score_atual()}')
         impressao_matriz_m(mapa, True, borda)
         despause_Timer()
         origem_jogador(coordenada_final[2], coordenada_final[3], direcao, borda)
@@ -115,6 +120,8 @@ def teleporte(mapa:list, coordenada_inicial:list, coordenada_final:list, direcao
         titulo = 'SafariCatch'
         alinhar_centro(titulo, 0)
         print(titulo)
+        alinhar_esquerda(1)
+        print(f'SCORE: {score.obter_score_atual()}')
         impressao_matriz_m(mapa, True, borda)
         despause_Timer()
         origem_jogador(coordenada_inicial[2], coordenada_inicial[3], direcao, borda)
@@ -165,6 +172,7 @@ def movimentar_jogador(mapa_atual, mod_x, mod_y, posicao, portais= [], borda=2, 
     
     novo_x = _pos_xy_jogador_[0] + mod_x
     novo_y = _pos_xy_jogador_[1] + mod_y
+    achou = False
 
     # Verifica colisão com o mapa_atual antes de mover
     if (verificar_colisao(mapa_atual, novo_x, novo_y)):
@@ -191,17 +199,26 @@ def movimentar_jogador(mapa_atual, mod_x, mod_y, posicao, portais= [], borda=2, 
         if not(len(mapa) == 0 and len(portais) == 0) and teleportou == False:
             teleportou = teleporte(mapa[0], portais[1], portais[3])
         
-        if teleportou == False:
+        if teleportou == False and achou == False:
             # Gera chance de encontrar pokemon
             areas = elementos_mapa.areas_caca()
             for i in range(len(areas)):
                 if (mapa_atual[_pos_xy_jogador_[1]][_pos_xy_jogador_[0]] == areas[i]) and random.random() < _CHANCE_POKEMON_:
-                    wc.gotoxy(0, 44)
+                    alinhar_centro("Você encontrou um Pokémon! Pressione qualquer tecla para continuar.", 44)
                     wc.textcolor(wc.YELLOW)
                     print("Você encontrou um Pokémon! Pressione qualquer tecla para continuar.")
                     wc.getch()
                     wc.clrscr()
                     wc.textcolor(wc.WHITE)
                     pause_Timer()
-                    combat_main(pokeball_list)
+                    # Chama combate
+                    combat_main(_pokeball_list_)
+                    # Reimprime valor de score
+                    titulo = 'SafariCatch'
+                    alinhar_centro(titulo, 0)
+                    print(titulo)
+                    alinhar_esquerda(1)
+                    print(f'SCORE: {score.obter_score_atual()}')
+                    achou = True
+                    break
 

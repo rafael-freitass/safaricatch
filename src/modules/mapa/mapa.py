@@ -10,9 +10,10 @@ from time import sleep
 sys.path.append(os.path.abspath(os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'utils')))
 
-
 ## Adiciona caminho para 'jogador' na busca de módulos
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname((os.path.dirname(__file__))), 'jogador')))
+## Adiciona caminho para 'jogador' na busca de módulos
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname((os.path.dirname(__file__))), 'resumo')))
 
 
 # Importações do projeto
@@ -20,6 +21,8 @@ from modules.mapa import map_functions
 from utils.timer import *
 from utils.text_functions import *
 from modules.jogador import movimento
+from modules.resumo import resumo
+from resumo import main as main_Resumo
 
 def main():
     # Limpeza da tela
@@ -53,7 +56,7 @@ def main():
     movimento.movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 1, 2)
 
     # Iniciar timer
-    timer_Main()  # Começa o timer em um processo paralelo
+    set_NumValue(90)
     count = 0
 
     while(True):
@@ -66,7 +69,8 @@ def main():
         # Verifica se o tempo não acabou
         if get_NumValue() == 0:
             terminar_Timer()
-            break  # Saia do loop se o tempo acabar
+            main_Resumo()
+            break 
 
         # Continuamente captura tecla
         if wc.kbhit():
@@ -105,7 +109,7 @@ def main():
                     pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa)
 
             elif key == "q":  # sai do jogo
-                terminar_Timer2()
+                terminar_Timer()
                 break
 
         count += 1

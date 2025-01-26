@@ -1,5 +1,9 @@
 pontos_totais = 0
 
+def reset_score():
+    global pontos_totais
+    pontos_totais = 0
+
 def aumentar_score(pokemon_pontos):
     global pontos_totais
     pontos_totais += pokemon_pontos

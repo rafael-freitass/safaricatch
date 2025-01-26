@@ -74,6 +74,7 @@ def main():
     opcoes = carregar_opcoes()
     selecionado = 0
     atualizar = True 
+    sair = False
 
     while True:
         cursor.hide()
@@ -100,6 +101,7 @@ def main():
             elif symbol.lower() == 'q':
                 winsound.Beep(700, 100)
                 break
+    return True
 
 if __name__ == "__main__":
     main()

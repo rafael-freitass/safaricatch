@@ -8,6 +8,30 @@ from modules.mapa import map_functions
 from modules.jogador import movimento
 from utils.timer import *
 
+# Globais 
+_nencontros_ = 0
+_ncapturas_ = 0
+_ndescobertas_ = 0
+
+def reset_globais():
+    global _nencontros_, _ncapturas_, _ndescobertas_  
+    _nencontros_ = 0
+    _ncapturas_ = 0
+    _ndescobertas_ = 0
+
+def get_encontros():
+    global _nencontros_
+    return _nencontros_
+
+def get_ncapturas():
+    global _ncapturas_
+    return _ncapturas_
+
+def get_descobertas():
+    global _ndescobertas_
+    return _ndescobertas_
+
+
 def carregar_pokebolas(caminho): # abre o json com info das pokeballs 
     try:
         with open(caminho, 'r', encoding='utf-8') as arquivo:
@@ -43,6 +67,8 @@ def carregar_pokedex(): # abre o json da pokedex com info dos pokemon
         return []
 
 def criar_save(nome_pokemon, pokebola, pokemon_pontos): # cria json do save
+    global _ndescobertas_
+
     caminho_save = "src/saves/save.json"
     dados_novos = {
         "nome":nome_pokemon,
@@ -64,6 +90,7 @@ def criar_save(nome_pokemon, pokebola, pokemon_pontos): # cria json do save
     else:
         # Adiciona um novo Pokémon
         dados_existentes.append(dados_novos)
+        _ndescobertas_ += 1
 
     with open(caminho_save, 'w', encoding='utf-8') as arquivo:
         json.dump(dados_existentes, arquivo, indent=4, ensure_ascii=False)
@@ -220,6 +247,9 @@ def redesenhar_mapa(mapa_game, pos_mapa_atual, portais):
     movimento.movimentar_jogador(mapa_game[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 0, 0, portais, 2, mapa_game)
 
 def main(pokeballs: list):
+    global _nencontros_, _ncapturas_
+
+    _nencontros_ += 1
     selecionado = 0
     pokemon_dados = carregar_pokedex()
     pokemon_selecionado = random.choice(pokemon_dados)
@@ -285,7 +315,7 @@ def main(pokeballs: list):
                     aguardar_acao()
                     wc.clrscr()
 
-
+                    _ncapturas_ += 1
                     pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa_game)
                     portais = map_functions.encontrar_coord_portais(mapa_game)
                     redesenhar_mapa(mapa_game, pos_mapa_atual, portais)

@@ -3,7 +3,6 @@
 # Importações de bibliotecas
 import os
 import sys
-import WConio2 as wc
 
 # Adição de caminhos
 ## Adiciona caminho para 'utils' na busca de módulos
@@ -17,7 +16,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname((os.path.dirname(__
 # Importações do projeto
 from modules.mapa import elementos_mapa
 from utils.text_functions import *
-from menu import main as menu_main
 
 # Funções de manipulação de mapa
 ## Retorna o mapa como uma lista de matrizes do tamanho da tela
@@ -114,13 +112,3 @@ def verificar_transicao_mapa(mapa: list, pos_mapa_atual: list, x_ou_y: str, dir:
                 return True
     
     return False
-
-# Funções de fluxo/importação
-def chamar_menu():
-    menu_main()
-
-def pause_game():
-    pass
-
-def despause():
-    pass
