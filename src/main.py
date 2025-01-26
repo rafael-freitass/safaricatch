@@ -4,13 +4,12 @@ import signal
 
 # Importações de projeto
 from modules.menu import menu 
-from menu import main as menu_Main
 from utils.timer import *
 
 def main():
     # Inicia multiprocessing com timer
     timer_Main()
-    if menu_Main():
+    if menu.main():
         # Encerra processo correndo em multiprocessing
         matar_Timer()
         # Encerra processo pai

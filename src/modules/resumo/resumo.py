@@ -13,10 +13,11 @@ from utils.text_functions import *
 from modules.score import score
 from modules.jogador import movimento
 from modules.combat import combat
+from saves import gamestate
 
 def main():
     texto_fim = 'Sua visita ao Safari acabou, veja seus resultados e volte sempre!'
-    instrucao = 'Pressione enterpara inciar um novo jogo ou qualquer tecla para voltar ao menu.'
+    instrucao = 'Pressione enter para inciar um novo jogo ou qualquer tecla para voltar ao menu.'
     pontos = 'SCORE: {}'.format(score.obter_score_atual())
     passos = 'Passos dados: {}'.format(movimento.get_passos())
     encontros = 'Pokemons encontrados: {}'.format(combat.get_encontros())
@@ -55,10 +56,10 @@ def main():
     wc.setcursortype(0)  
 
     # Salva a pontuação
-#    score.escrever_resume()
+    score.escrever_resume(pontos,passos,encontros,n_capturas,descobertas)
 
     # Reseta globais para a próxima partida
-    combat.reset_globais()
+    gamestate.reset()
     movimento.reset_passos()
     score.reset_score()
 

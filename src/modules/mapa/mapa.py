@@ -22,7 +22,6 @@ from utils.timer import *
 from utils.text_functions import *
 from modules.jogador import movimento
 from modules.resumo import resumo
-from resumo import main as main_Resumo
 
 def main():
     # Limpeza da tela
@@ -56,7 +55,7 @@ def main():
     movimento.movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 1, 2)
 
     # Iniciar timer
-    set_NumValue(90)
+    set_NumValue(30)
     count = 0
 
     while(True):
@@ -66,10 +65,11 @@ def main():
             alinhar_direita(tempo, 1)
             print(tempo)
 
+
         # Verifica se o tempo não acabou
         if get_NumValue() == 0:
             terminar_Timer()
-            main_Resumo()
+            resumo.main()
             break 
 
         # Continuamente captura tecla

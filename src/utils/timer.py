@@ -65,8 +65,9 @@ def despause_Timer():
     num.value = valor_Pausado # Modifica o valor do timer para o valor que tinha parado anteriormente
 
 def terminar_Timer():
-    num.value = 0 # Modifica o valor do timer para 0
-    winsound.Beep(250, 1000) #TODO Lembrar de modificar o som de terminar o timer aqui (retire o import do winsound se não for usar)
+    if num.value == 0: # Modifica o valor do timer para 0
+        winsound.Beep(250, 1000) #tODO Lembrar de modificar o som de terminar o timer aqui (retire o import do winsound se não for usar)
+        num.value = -3
     return False
 
 

@@ -7,29 +7,28 @@ from modules.mapa import mapa
 from modules.mapa import map_functions
 from modules.jogador import movimento
 from utils.timer import *
+from saves import gamestate
 
-# Globais 
-_nencontros_ = 0
-_ncapturas_ = 0
-_ndescobertas_ = 0
-
-def reset_globais():
-    global _nencontros_, _ncapturas_, _ndescobertas_  
-    _nencontros_ = 0
-    _ncapturas_ = 0
-    _ndescobertas_ = 0
+def set_encontros(num):
+    gamestate._nencontros_ += num
+    return gamestate._nencontros_
 
 def get_encontros():
-    global _nencontros_
-    return _nencontros_
+    return gamestate._nencontros_
+
+def set_ncapturas(num):
+    gamestate._ncapturas_ += num 
+    return gamestate._ncapturas_
 
 def get_ncapturas():
-    global _ncapturas_
-    return _ncapturas_
+    return gamestate._ncapturas_
+
+def set_descobertas(num):
+    gamestate._ndescobertas_ += num
+    return gamestate._ndescobertas_
 
 def get_descobertas():
-    global _ndescobertas_
-    return _ndescobertas_
+    return gamestate._ndescobertas_
 
 
 def carregar_pokebolas(caminho): # abre o json com info das pokeballs 
@@ -68,6 +67,7 @@ def carregar_pokedex(): # abre o json da pokedex com info dos pokemon
 
 def criar_save(nome_pokemon, pokebola, pokemon_pontos): # cria json do save
     global _ndescobertas_
+    num = 1
 
     caminho_save = "src/saves/save.json"
     dados_novos = {
@@ -90,7 +90,7 @@ def criar_save(nome_pokemon, pokebola, pokemon_pontos): # cria json do save
     else:
         # Adiciona um novo Pokémon
         dados_existentes.append(dados_novos)
-        _ndescobertas_ += 1
+        set_descobertas(num)
 
     with open(caminho_save, 'w', encoding='utf-8') as arquivo:
         json.dump(dados_existentes, arquivo, indent=4, ensure_ascii=False)
@@ -249,7 +249,8 @@ def redesenhar_mapa(mapa_game, pos_mapa_atual, portais):
 def main(pokeballs: list):
     global _nencontros_, _ncapturas_
 
-    _nencontros_ += 1
+    num = 1
+    set_encontros(num)
     selecionado = 0
     pokemon_dados = carregar_pokedex()
     pokemon_selecionado = random.choice(pokemon_dados)
@@ -315,7 +316,7 @@ def main(pokeballs: list):
                     aguardar_acao()
                     wc.clrscr()
 
-                    _ncapturas_ += 1
+                    set_ncapturas(num)
                     pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa_game)
                     portais = map_functions.encontrar_coord_portais(mapa_game)
                     redesenhar_mapa(mapa_game, pos_mapa_atual, portais)
