@@ -3,31 +3,31 @@
         "nome": "Squirtle",
         "pokebola": "masterball",
         "pontos": 100,
-        "capturas": 1
+        "capturas": 2
     },
     {
         "nome": "Jigglypuff",
         "pokebola": "pokeball",
         "pontos": 130,
-        "capturas": 3
+        "capturas": 5
     },
     {
         "nome": "Porygon",
         "pokebola": "masterball",
         "pontos": 150,
-        "capturas": 3
+        "capturas": 4
     },
     {
         "nome": "Pikachu",
         "pokebola": "masterball",
         "pontos": 120,
-        "capturas": 3
+        "capturas": 4
     },
     {
         "nome": "Bulbasauro",
         "pokebola": "greatball",
         "pontos": 100,
-        "capturas": 2
+        "capturas": 3
     },
     {
         "nome": "Psyduck",
@@ -51,6 +51,6 @@
         "nome": "Abra",
         "pokebola": "ultraball",
         "pontos": 150,
-        "capturas": 3
+        "capturas": 4
     }
 ]

@@ -244,7 +244,7 @@ def redesenhar_mapa(mapa_game, pos_mapa_atual, portais):
     wc.clrscr()
     att_container(mapa_game, 0, pos_mapa_atual[0])
     mapa.impressao_matriz_m(mapa_game, True, 2)
-    movimento.movimentar_jogador(mapa_game[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 0, 0, portais, 2, mapa_game)
+    movimento.movimentar_jogador(mapa_game[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 0, 0, portais, 2, pos_mapa_atual, mapa_game)
 
 pokeball_list = carregar_pokebolas("src/saves/pokeballs.json")
     

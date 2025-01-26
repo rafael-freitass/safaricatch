@@ -1,5 +1,5 @@
-SCORE: 0
-Passos dados: 11
-Pokemons encontrados: 0
-Pokemons capturados: 0
+SCORE: 750
+Passos dados: 359
+Pokemons encontrados: 6
+Pokemons capturados: 6
 Novos pokemons descobertos: 0
