@@ -29,7 +29,7 @@ from combat import main as combat_main
 _pos_xy_jogador_ = [1, 1]
 _passos_ = 0
 _CHANCE_POKEMON_ = 0.12
-# _pokeball_list_ = combat.carregar_pokebolas("src/saves/pokeballs.json")
+_pokeball_list_ = combat.carregar_pokebolas("src/saves/pokeballs.json")
 
 
 
@@ -187,6 +187,7 @@ def movimentar_jogador(mapa_atual, mod_x, mod_y, posicao, portais= [], borda=2, 
         # Teleporta, se estiver em portal e ainda não tiver feito
         teleportou = False
         if not(len(mapa) == 0 and len(portais) == 0) and teleportou == False:
+            breakpoint()
             teleportou = teleporte(mapa[0], portais[0], portais[2])
             
         if not(len(mapa) == 0 and len(portais) == 0) and teleportou == False:

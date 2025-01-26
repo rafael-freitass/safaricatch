@@ -56,7 +56,7 @@ def main():
     movimento.movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 1, 2)
 
     # Iniciar timer
-    set_NumValue(30)
+    set_NumValue(90)
     count = 0
 
     while(True):

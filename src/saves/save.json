@@ -9,7 +9,7 @@
         "nome": "Jigglypuff",
         "pokebola": "pokeball",
         "pontos": 130,
-        "capturas": 2
+        "capturas": 3
     },
     {
         "nome": "Porygon",
@@ -51,6 +51,6 @@
         "nome": "Abra",
         "pokebola": "ultraball",
         "pontos": 150,
-        "capturas": 2
+        "capturas": 3
     }
 ]

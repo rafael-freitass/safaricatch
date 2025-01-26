@@ -247,8 +247,6 @@ def redesenhar_mapa(mapa_game, pos_mapa_atual, portais):
     movimento.movimentar_jogador(mapa_game[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 0, 0, portais, 2, mapa_game)
 
 pokeball_list = carregar_pokebolas("src/saves/pokeballs.json")
-
-def main():
     
 def main(pokeballs: list, pos_mapa_atual):
     global _nencontros_, _ncapturas_
