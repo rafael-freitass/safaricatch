@@ -4,6 +4,7 @@ import os
 import sys
 import WConio2 as wc
 from time import sleep
+import json
 
 # Adição de caminhos
 ## Adiciona caminho para 'utils' na busca de módulos

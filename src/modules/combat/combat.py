@@ -32,7 +32,7 @@ def get_descobertas():
     return gamestate._ndescobertas_
 
 
-def carregar_pokebolas(caminho): # abre o json com info das pokeballs 
+def carregar_pokebolas(caminho): # abre o json com info das pokeball_list 
     try:
         with open(caminho, 'r', encoding='utf-8') as arquivo:
             return json.load(arquivo)
@@ -246,6 +246,10 @@ def redesenhar_mapa(mapa_game, pos_mapa_atual, portais):
     mapa.impressao_matriz_m(mapa_game, True, 2)
     movimento.movimentar_jogador(mapa_game[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 0, 0, portais, 2, mapa_game)
 
+pokeball_list = carregar_pokebolas("src/saves/pokeballs.json")
+
+def main():
+    
 def main(pokeballs: list, pos_mapa_atual):
     global _nencontros_, _ncapturas_
 
@@ -263,7 +267,7 @@ def main(pokeballs: list, pos_mapa_atual):
     mapa_game = map_functions.carregar_mapa("mapa.txt")
     mapa.alinhar_add_margem_tela(0)
 
-    if not pokeballs:
+    if not pokeball_list:
         print("Nenhuma Pokébola carregada.")
         return
     
@@ -277,35 +281,35 @@ def main(pokeballs: list, pos_mapa_atual):
         tempo_atual = segundo_Para_Minuto(tempo)
 
         if atualizar == True:
-            renderizar_combate(pokemon_nome, pokemon_ascii, pokeballs, selecionado, cor, tempo_atual)
+            renderizar_combate(pokemon_nome, pokemon_ascii, pokeball_list, selecionado, cor, tempo_atual)
             atualizar = False
 
         if wc.kbhit():
             _, symbol = wc.getch()
             if symbol.lower() == 'w':  # sobe no menu
                 winsound.Beep(500, 100)
-                selecionado = (selecionado - 1) % len(pokeballs)
+                selecionado = (selecionado - 1) % len(pokeball_list)
                 atualizar = True
 
             elif symbol.lower() == 's':  # desce no menu
                 winsound.Beep(500, 100)
-                selecionado = (selecionado + 1) % len(pokeballs)
+                selecionado = (selecionado + 1) % len(pokeball_list)
                 atualizar = True
 
             elif symbol == '\r':  # seleciona uma opção
                 winsound.Beep(900, 100)
 
-                pokebola_escolhida = pokeballs[selecionado]
-                if pokeballs[selecionado]['quantidade'] <= 0:
-                    print(f"\nSuas pokebolas do tipo {pokeballs[selecionado]['name']} acabaram! Escolha outra opção")
+                pokebola_escolhida = pokeball_list[selecionado]
+                if pokeball_list[selecionado]['quantidade'] <= 0:
+                    print(f"\nSuas pokebolas do tipo {pokeball_list[selecionado]['name']} acabaram! Escolha outra opção")
                     aguardar_acao()
                     wc.clrscr()
                     atualizar = True
                     continue
 
-                pokeballs[selecionado]['quantidade'] -= 1
+                pokeball_list[selecionado]['quantidade'] -= 1
 
-                print(f"\nVocê escolheu {pokeballs[selecionado]['name']}!")
+                print(f"\nVocê escolheu {pokeball_list[selecionado]['name']}!")
                 time.sleep(1)
                 resultado, deubom, fugiu = capturar_pokemon(pokemon_dados, pokebola_escolhida, pokemon_nome, pokemon_pontos)
                 print(resultado)
@@ -335,8 +339,6 @@ def main(pokeballs: list, pos_mapa_atual):
                         aguardar_acao()
                         wc.clrscr()
                         atualizar = True
-
-  
 
 if __name__ == "__main__":
     main()
