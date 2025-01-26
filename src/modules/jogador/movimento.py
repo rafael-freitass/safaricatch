@@ -168,7 +168,7 @@ def transicao_mapa(mapa: list, pos_mapa_atual: list, limite: tuple, separadores:
     return False
 
 # Movimentação do jogador com verificações e impressão.
-def movimentar_jogador(mapa_atual, mod_x, mod_y, posicao, portais= [], borda=2, *mapa):
+def movimentar_jogador(mapa_atual, mod_x, mod_y, posicao, portais= [], borda=2, pos_mapa_atual =[], *mapa):
     global _pos_xy_jogador_
     global _passos_
     
@@ -215,7 +215,7 @@ def movimentar_jogador(mapa_atual, mod_x, mod_y, posicao, portais= [], borda=2, 
                     pause_Timer()
                     combat.animacao_espiral(mapa_atual)
                     # Chama combate
-                    combat_main(_pokeball_list_)
+                    combat_main(_pokeball_list_, pos_mapa_atual)
                     # Reimprime valor de score
                     titulo = 'SafariCatch'
                     alinhar_centro(titulo, 0)

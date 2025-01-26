@@ -246,7 +246,7 @@ def redesenhar_mapa(mapa_game, pos_mapa_atual, portais):
     mapa.impressao_matriz_m(mapa_game, True, 2)
     movimento.movimentar_jogador(mapa_game[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 0, 0, portais, 2, mapa_game)
 
-def main(pokeballs: list):
+def main(pokeballs: list, pos_mapa_atual):
     global _nencontros_, _ncapturas_
 
     num = 1
@@ -317,7 +317,6 @@ def main(pokeballs: list):
                     wc.clrscr()
 
                     set_ncapturas(num)
-                    pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa_game)
                     portais = map_functions.encontrar_coord_portais(mapa_game)
                     redesenhar_mapa(mapa_game, pos_mapa_atual, portais)
 
@@ -328,12 +327,9 @@ def main(pokeballs: list):
                         aguardar_acao()
                         wc.clrscr()
                         
-                        
                         pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa_game)
                         portais = map_functions.encontrar_coord_portais(mapa_game)
                         redesenhar_mapa(mapa_game, pos_mapa_atual, portais)
-                        
-
                         break
                     else:
                         aguardar_acao()

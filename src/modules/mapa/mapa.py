@@ -81,7 +81,7 @@ def main():
                 if (movimento.transicao_mapa(mapa, pos_mapa_atual, limite, map_functions.encontrar_todos_separadores(mapa), key)):
                     pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa)
                 else:
-                    movimento.movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, -1, 0, portais, 2, mapa)
+                    movimento.movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, -1, 0, portais, 2, pos_mapa_atual, mapa)
                     pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa)
 
             elif key == "s":  # move para baixo
@@ -89,7 +89,7 @@ def main():
                 if (movimento.transicao_mapa(mapa, pos_mapa_atual, limite, map_functions.encontrar_todos_separadores(mapa), key)):
                     pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa)
                 else:
-                    movimento.movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 1, 2, portais, 2, mapa)
+                    movimento.movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 1, 2, portais, 2, pos_mapa_atual, mapa)
                     pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa)
 
             elif key == "a":  # move para esquerda
@@ -97,7 +97,7 @@ def main():
                 if (movimento.transicao_mapa(mapa, pos_mapa_atual, limite, map_functions.encontrar_todos_separadores(mapa), key)):
                     pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa)
                 else:
-                    movimento.movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], -1, 0, 1, portais, 2, mapa)
+                    movimento.movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], -1, 0, 1, portais, 2, pos_mapa_atual, mapa)
                     pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa)
 
             elif key == "d":  # move para direita
@@ -105,7 +105,7 @@ def main():
                 if (movimento.transicao_mapa(mapa, pos_mapa_atual, limite, map_functions.encontrar_todos_separadores(mapa), key)):
                     pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa)
                 else:
-                    movimento.movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 1, 0, 3, portais, 2, mapa)
+                    movimento.movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 1, 0, 3, portais, 2, pos_mapa_atual, mapa)
                     pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa)
 
             elif key == "q":  # sai do jogo
