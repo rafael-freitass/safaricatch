@@ -111,7 +111,7 @@ def renderizar_combate(pokemon_nome, pokemon_ascii, pokebolas, selecionado,cor,t
 
 
 
-def animacao_espiral(matriz): # animação quando acha o pokemon
+def animacao_espiral(matriz, borda = 2): # animação quando acha o pokemon
     maxI = len(matriz)
     maxJ = len(matriz[0])
 
@@ -121,27 +121,27 @@ def animacao_espiral(matriz): # animação quando acha o pokemon
     while topo <= base and esquerda <= direita:
         # Apagar a linha superior
         for col in range(esquerda, direita + 1):
-            wc.gotoxy(col, topo)
+            wc.gotoxy(col+borda, topo+ borda)
             print(" ", end="", flush=True)
         topo += 1
 
         # Apagar a coluna direita
         for linha in range(topo, base + 1):
-            wc.gotoxy(direita, linha)
+            wc.gotoxy(direita + borda, linha+ borda)
             print(" ", end="", flush=True)
         direita -= 1
 
         # Apagar a linha inferior
         if topo <= base:
             for col in range(direita, esquerda - 1, -1):
-                wc.gotoxy(col, base)
+                wc.gotoxy(col+ borda, base+borda)
                 print(" ", end="", flush=True)
             base -= 1
 
         # Apagar a coluna esquerda
         if esquerda <= direita:
             for linha in range(base, topo - 1, -1):
-                wc.gotoxy(esquerda, linha)
+                wc.gotoxy(esquerda + borda, linha + borda)
                 print(" ", end="", flush=True)
             esquerda += 1
 
