@@ -17,7 +17,7 @@ def teste(opcao):
             wc.clrscr()
             instrucoes.main()
         elif opcao == "jogar":
-            mapa.rodar()
+            mapa.main()
         elif opcao == "score":
             pokedex.main()
             
@@ -25,19 +25,19 @@ def teste(opcao):
 
 def carregar_opcoes():
     return {
-        """ 
+        r""" 
 ┏┳┏┓┏┓┏┓┳┓
  ┃┃┃┃┓┣┫┣┫
 ┗┛┗┛┗┛┛┗┛┗
               
 """: teste('jogar'),
-        """
+        r"""
 ┏┓┏┓┳┓┏┳┓┳┓┏┓┓ ┏┓┏┓
 ┃ ┃┃┃┃ ┃ ┣┫┃┃┃ ┣ ┗┓
 ┗┛┗┛┛┗ ┻ ┛┗┗┛┗┛┗┛┗┛
 
  """: teste('instrucoes'),
-"""
+r"""
 ┏┓┏┓┓┏┓┏┓┳┳┓┏┓┳┓┏┓
 ┃┃┃┃┃┫ ┣ ┃┃┃┃┃┃┃┗┓
 ┣┛┗┛┛┗┛┗┛┛ ┗┗┛┛┗┗┛
@@ -47,7 +47,7 @@ def carregar_opcoes():
 def mostrar_menu(selecionado, opcoes):
     wc.clrscr()
     wc.textcolor(wc.YELLOW)
-    print("""
+    print(r"""
     ___   _   ____  _   ___   __  __   _  _____  __  _ __
   ,' _/ .' \ / __/.' \ / o | / /,'_/ .' \/_  _/,'_/ /// /
  _\ `. / o // _/ / o //  ,' / // /_ / o / / / / /_ / ` / 
@@ -74,6 +74,7 @@ def main():
     opcoes = carregar_opcoes()
     selecionado = 0
     atualizar = True 
+    sair = False
 
     while True:
         cursor.hide()
@@ -100,4 +101,7 @@ def main():
             elif symbol.lower() == 'q':
                 winsound.Beep(700, 100)
                 break
-main()
+    return True
+
+if __name__ == "__main__":
+    main()

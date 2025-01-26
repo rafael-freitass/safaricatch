@@ -3,8 +3,36 @@ import json, winsound, cursor, random, time, sys, os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from modules.score import score
+from modules.mapa import mapa
+from modules.mapa import map_functions
+from modules.jogador import movimento
+from utils.timer import *
+from utils.text_functions import *
+from saves import gamestate
 
-def carregar_pokebolas(caminho): # abre o json com info das pokeballs 
+def set_encontros(num):
+    gamestate._nencontros_ += num
+    return gamestate._nencontros_
+
+def get_encontros():
+    return gamestate._nencontros_
+
+def set_ncapturas(num):
+    gamestate._ncapturas_ += num 
+    return gamestate._ncapturas_
+
+def get_ncapturas():
+    return gamestate._ncapturas_
+
+def set_descobertas(num):
+    gamestate._ndescobertas_ += num
+    return gamestate._ndescobertas_
+
+def get_descobertas():
+    return gamestate._ndescobertas_
+
+
+def carregar_pokebolas(caminho): # abre o json com info das pokeball_list 
     try:
         with open(caminho, 'r', encoding='utf-8') as arquivo:
             return json.load(arquivo)
@@ -39,6 +67,9 @@ def carregar_pokedex(): # abre o json da pokedex com info dos pokemon
         return []
 
 def criar_save(nome_pokemon, pokebola, pokemon_pontos): # cria json do save
+    global _ndescobertas_
+    num = 1
+
     caminho_save = "src/saves/save.json"
     dados_novos = {
         "nome":nome_pokemon,
@@ -60,11 +91,12 @@ def criar_save(nome_pokemon, pokebola, pokemon_pontos): # cria json do save
     else:
         # Adiciona um novo Pokémon
         dados_existentes.append(dados_novos)
+        set_descobertas(num)
 
     with open(caminho_save, 'w', encoding='utf-8') as arquivo:
         json.dump(dados_existentes, arquivo, indent=4, ensure_ascii=False)
 
-def renderizar_combate(pokemon_nome, pokemon_ascii, pokebolas, selecionado,cor): # tela do combate
+def renderizar_combate(pokemon_nome, pokemon_ascii, pokebolas, selecionado,cor,tempo_atual): # tela do combate
     wc.clrscr()
     print(f"Um {pokemon_nome} selvagem apareceu!\n")
     wc.textcolor(getattr(wc, cor))
@@ -76,8 +108,9 @@ def renderizar_combate(pokemon_nome, pokemon_ascii, pokebolas, selecionado,cor):
             print(f"> {i+1}. {pokebola['name']}","."*10, f"qtd: {pokebola['quantidade']}")
         else:
             print(f"  {i+1}. {pokebola['name']}","."*10, f"qtd: {pokebola['quantidade']}")
+    print(tempo_atual)
 
-def animacao_espiral(matriz): # animação quando acha o pokemon
+def animacao_espiral(matriz, borda = 2): # animação quando acha o pokemon
     maxI = len(matriz)
     maxJ = len(matriz[0])
 
@@ -87,27 +120,27 @@ def animacao_espiral(matriz): # animação quando acha o pokemon
     while topo <= base and esquerda <= direita:
         # Apagar a linha superior
         for col in range(esquerda, direita + 1):
-            wc.gotoxy(col, topo)
+            wc.gotoxy(col+borda, topo+ borda)
             print(" ", end="", flush=True)
         topo += 1
 
         # Apagar a coluna direita
         for linha in range(topo, base + 1):
-            wc.gotoxy(direita, linha)
+            wc.gotoxy(direita + borda, linha+ borda)
             print(" ", end="", flush=True)
         direita -= 1
 
         # Apagar a linha inferior
         if topo <= base:
             for col in range(direita, esquerda - 1, -1):
-                wc.gotoxy(col, base)
+                wc.gotoxy(col+ borda, base+borda)
                 print(" ", end="", flush=True)
             base -= 1
 
         # Apagar a coluna esquerda
         if esquerda <= direita:
             for linha in range(base, topo - 1, -1):
-                wc.gotoxy(esquerda, linha)
+                wc.gotoxy(esquerda + borda, linha + borda)
                 print(" ", end="", flush=True)
             esquerda += 1
 
@@ -207,7 +240,19 @@ def aguardar_acao():
                 winsound.Beep(900, 100)
                 break
 
-def main(pokeballs: list):
+def redesenhar_mapa(mapa_game, pos_mapa_atual, portais):
+    wc.clrscr()
+    att_container(mapa_game, 0, pos_mapa_atual[0])
+    mapa.impressao_matriz_m(mapa_game, True, 2)
+    movimento.movimentar_jogador(mapa_game[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 0, 0, portais, 2, pos_mapa_atual, mapa_game)
+
+pokeball_list = carregar_pokebolas("src/saves/pokeballs.json")
+    
+def main(pokeballs: list, pos_mapa_atual):
+    global _nencontros_, _ncapturas_
+
+    num = 1
+    set_encontros(num)
     selecionado = 0
     pokemon_dados = carregar_pokedex()
     pokemon_selecionado = random.choice(pokemon_dados)
@@ -215,45 +260,54 @@ def main(pokeballs: list):
     pokemon_pontos = pokemon_selecionado["pontos"]
     cor = pokemon_selecionado["cor"]
     pokemon_ascii = carregar_pokemonASCII("src/saves/poke_image.txt", pokemon_nome)
+    
+    mapa.alinhar_add_margem_tela(2)
+    mapa_game = map_functions.carregar_mapa("mapa.txt")
+    mapa.alinhar_add_margem_tela(0)
 
-    if not pokeballs:
+    if not pokeball_list:
         print("Nenhuma Pokébola carregada.")
         return
     
     atualizar = True
     cursor.hide()
 
+    despause_Timer()
+
     while True:
+        tempo = get_NumValue()
+        tempo_atual = segundo_Para_Minuto(tempo)
+
         if atualizar == True:
-            renderizar_combate(pokemon_nome, pokemon_ascii, pokeballs, selecionado, cor)
+            renderizar_combate(pokemon_nome, pokemon_ascii, pokeball_list, selecionado, cor, tempo_atual)
             atualizar = False
 
         if wc.kbhit():
             _, symbol = wc.getch()
             if symbol.lower() == 'w':  # sobe no menu
                 winsound.Beep(500, 100)
-                selecionado = (selecionado - 1) % len(pokeballs)
+                selecionado = (selecionado - 1) % len(pokeball_list)
                 atualizar = True
 
             elif symbol.lower() == 's':  # desce no menu
                 winsound.Beep(500, 100)
-                selecionado = (selecionado + 1) % len(pokeballs)
+                selecionado = (selecionado + 1) % len(pokeball_list)
                 atualizar = True
 
             elif symbol == '\r':  # seleciona uma opção
                 winsound.Beep(900, 100)
 
-                pokebola_escolhida = pokeballs[selecionado]
-                if pokeballs[selecionado]['quantidade'] <= 0:
-                    print(f"\nSuas pokebolas do tipo {pokeballs[selecionado]['name']} acabaram! Escolha outra opção")
+                pokebola_escolhida = pokeball_list[selecionado]
+                if pokeball_list[selecionado]['quantidade'] <= 0:
+                    print(f"\nSuas pokebolas do tipo {pokeball_list[selecionado]['name']} acabaram! Escolha outra opção")
                     aguardar_acao()
                     wc.clrscr()
                     atualizar = True
                     continue
 
-                pokeballs[selecionado]['quantidade'] -= 1
+                pokeball_list[selecionado]['quantidade'] -= 1
 
-                print(f"\nVocê escolheu {pokeballs[selecionado]['name']}!")
+                print(f"\nVocê escolheu {pokeball_list[selecionado]['name']}!")
                 time.sleep(1)
                 resultado, deubom, fugiu = capturar_pokemon(pokemon_dados, pokebola_escolhida, pokemon_nome, pokemon_pontos)
                 print(resultado)
@@ -263,17 +317,26 @@ def main(pokeballs: list):
                     print(f"Você ganhou {pokemon_pontos} pontos!")
                     aguardar_acao()
                     wc.clrscr()
+
+                    set_ncapturas(num)
+                    portais = map_functions.encontrar_coord_portais(mapa_game)
+                    redesenhar_mapa(mapa_game, pos_mapa_atual, portais)
+
+
                     break
                 else:
                     if fugiu:
                         aguardar_acao()
                         wc.clrscr()
+                        
+                        pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa_game)
+                        portais = map_functions.encontrar_coord_portais(mapa_game)
+                        redesenhar_mapa(mapa_game, pos_mapa_atual, portais)
                         break
                     else:
                         aguardar_acao()
                         wc.clrscr()
                         atualizar = True
-                    
 
 if __name__ == "__main__":
     main()

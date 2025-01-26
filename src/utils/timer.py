@@ -21,7 +21,6 @@ def segundo_Para_Minuto(tempo): # Tem como parâmetro o tempo a ser traduzido
     else:
         return "00:" + segundo #! 00:00
 
-
 #! Esse é o timer
 def timer(num):
     num.value = 90 #! Um minuto e meio
@@ -50,11 +49,15 @@ def set_NumValue(n): # Modifica o valor do tempo do timer ao tempo inserido como
 
 #! Função main, cuidado
 def timer_Main():
-    processo_Timer.start() # Apenas inicia o timer
+    global processo_Timer
+    if not processo_Timer.is_alive():  # Verifica se o processo está em execução
+        processo_Timer = Process(target=timer, args=(num,))
+        processo_Timer.start() # Apenas inicia o timer
 
 def pause_Timer():
     global valor_Pausado
     valor_Pausado = num.value # Guarda o valor do tempo atual
+    guardar_valor_Pausado = valor_Pausado
     num.value = -3 # Modifica o valor do timer para entrar em um loop de espera
 
 def despause_Timer():
@@ -62,18 +65,16 @@ def despause_Timer():
     num.value = valor_Pausado # Modifica o valor do timer para o valor que tinha parado anteriormente
 
 def terminar_Timer():
-    num.value = 0 # Modifica o valor do timer para 0
-    winsound.Beep(250, 1000) #TODO Lembrar de modificar o som de terminar o timer aqui (retire o import do winsound se não for usar)
+    if num.value == 0: # Modifica o valor do timer para 0
+        winsound.Beep(250, 1000) #tODO Lembrar de modificar o som de terminar o timer aqui (retire o import do winsound se não for usar)
+        num.value = -3
     return False
+
 
 #! Globais
 num = Value('i', 90) #! Um minuto e meio
 processo_Timer = Process(target=timer, args=(num,))
 valor_Pausado = 0
 
-'''if __name__ == "__main__": # Necessário para o Processing ocorrer em Windows
+if __name__ == "__main__": # Necessário para o Processing ocorrer em Windows
     timer_Main()
-    t_Sleep(12)
-    set_NumValue(10) #! Testes
-    t_Sleep(12)
-    matar_Timer()'''

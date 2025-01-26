@@ -1,101 +1,120 @@
+
+# Importações de bibliotecas
+import os
+import sys
 import WConio2 as wc
-import cursor
-import json, os, sys, random
+from time import sleep
+import json
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-from modules.combat import combat
-from modules.score import score
+# Adição de caminhos
+## Adiciona caminho para 'utils' na busca de módulos
+sys.path.append(os.path.abspath(os.path.join(
+    os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'utils')))
 
-def carregar_pokebolas(caminho): # abre o json com info das pokeballs 
-    try:
-        with open(caminho, 'r', encoding='utf-8') as arquivo:
-            return json.load(arquivo)
-    except FileNotFoundError:
-        print("Erro: O arquivo pokeballs.json não foi encontrado.")
-        return []
-    except json.JSONDecodeError:
-        print("Erro: O arquivo pokeballs.json contém erros.")
-        return []
+## Adiciona caminho para 'jogador' na busca de módulos
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname((os.path.dirname(__file__))), 'jogador')))
+## Adiciona caminho para 'jogador' na busca de módulos
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname((os.path.dirname(__file__))), 'resumo')))
 
 
-pokeball_list = carregar_pokebolas("src/saves/pokeballs.json")
+# Importações do projeto
+from modules.mapa import map_functions
+from utils.timer import *
+from utils.text_functions import *
+from modules.jogador import movimento
+from modules.resumo import resumo
 
-VAZIO = " "
-PAREDE = "#"
-NAVEGAVEL = "."
-MATO = "M"
-JOGADOR = "@"
-
-maxI = 10  # Altura
-maxJ = 20  # Largura
-jogadorI, jogadorJ = 1, 1
-
-CHANCE_POKEMON = 0.3
-
-
-def inicializar_matriz(matriz):
-    for i in range(maxI):
-        linha = []
-        for j in range(maxJ):
-            if i == 0 or i == maxI - 1 or j == 0 or j == maxJ - 1:
-                linha.append(PAREDE)  
-            elif random.random() < 0.15:
-                linha.append(MATO)  
-            else:
-                linha.append(NAVEGAVEL)  
-        matriz.append(linha)
-
-def desenhar_tela(matriz):
-    wc.gotoxy(0, 0)
-    for i in range(maxI):
-        for j in range(maxJ):
-            if i == jogadorI and j == jogadorJ:
-                wc.textcolor(wc.RED)  # Cor do jogador
-                wc.putch(JOGADOR)
-                wc.textcolor(wc.WHITE)
-            elif matriz[i][j] == PAREDE:
-                wc.textcolor(wc.DARKGRAY)  # Cor das paredes
-                wc.putch(PAREDE)
-                wc.textcolor(wc.WHITE)
-            elif matriz[i][j] == NAVEGAVEL:
-                wc.textcolor(wc.BROWN)  # Cor das áreas navegáveis
-                wc.putch(NAVEGAVEL)
-                wc.textcolor(wc.WHITE)
-            elif matriz[i][j] == MATO:
-                wc.textcolor(wc.GREEN)  # Cor do mato
-                wc.putch(MATO)
-                wc.textcolor(wc.WHITE)
-        wc.putch("\n")
-
-def movimentar_jogador(dI, dJ, matriz):
-    global jogadorI, jogadorJ
-    novoI, novoJ = jogadorI + dI, jogadorJ + dJ
-
-    if matriz[novoI][novoJ] in [NAVEGAVEL, MATO]:
-        jogadorI, jogadorJ = novoI, novoJ
-        if matriz[novoI][novoJ] == MATO and random.random() < CHANCE_POKEMON:
-            combat.animacao_espiral(matriz)
-            combat.main(pokeball_list)
-
-def rodar():
-    matriz = []
+def main():
+    # Limpeza da tela
     wc.clrscr()
-    cursor.hide()
-    inicializar_matriz(matriz)
+    wc.setcursortype(0)
 
-    while True:
-        desenhar_tela(matriz)
-        print(f"score: {score.obter_score_atual()}")
+    # Impressão fixa
+    titulo = 'SafariCatch'
+    score = 0
+    tempo = '01:30'
+    alinhar_centro(titulo, 0)
+    print(titulo)
+    alinhar_esquerda(1)
+    print(f'SCORE: {score}')
+    alinhar_direita(tempo, 1)
+    print(f'{tempo}')
+
+    # Impressão dentro da margem
+    alinhar_add_margem_tela(2)
+    mapa = map_functions.carregar_mapa('mapa.txt')
+    alinhar_add_margem_tela(0)
+
+    # Inicialização do mapa e do jogador
+    impressao_matriz_m(mapa, True, 2)
+    pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa)
+    portais = map_functions.encontrar_coord_portais(mapa)
+    movimento.origem_jogador(75, 3, 2)
+    sleep(0.4)
+    movimento.movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 1, 2)
+    sleep(0.4)
+    movimento.movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 1, 2)
+
+    # Iniciar timer
+    set_NumValue(90)
+    count = 0
+
+    while(True):
+        # Verifica repetições antes de reimprimir timer
+        if (count % 800 == 0):
+            tempo = '{}'.format(segundo_Para_Minuto(num.value))
+            alinhar_direita(tempo, 1)
+            print(tempo)
+
+
+        # Verifica se o tempo não acabou
+        if get_NumValue() == 0:
+            terminar_Timer()
+            resumo.main()
+            break 
+
+        # Continuamente captura tecla
         if wc.kbhit():
             _, key = wc.getch()
 
             if key == "w":  # move para cima
-                movimentar_jogador(-1, 0, matriz)
+                limite = movimento.verificar_limite(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]])
+                if (movimento.transicao_mapa(mapa, pos_mapa_atual, limite, map_functions.encontrar_todos_separadores(mapa), key)):
+                    pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa)
+                else:
+                    movimento.movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, -1, 0, portais, 2, pos_mapa_atual, mapa)
+                    pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa)
+
             elif key == "s":  # move para baixo
-                movimentar_jogador(1, 0, matriz)
+                limite = movimento.verificar_limite(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]])
+                if (movimento.transicao_mapa(mapa, pos_mapa_atual, limite, map_functions.encontrar_todos_separadores(mapa), key)):
+                    pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa)
+                else:
+                    movimento.movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 0, 1, 2, portais, 2, pos_mapa_atual, mapa)
+                    pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa)
+
             elif key == "a":  # move para esquerda
-                movimentar_jogador(0, -1, matriz)
-            elif key == "d":  # move apra direita
-                movimentar_jogador(0, 1, matriz)
+                limite = movimento.verificar_limite(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]])
+                if (movimento.transicao_mapa(mapa, pos_mapa_atual, limite, map_functions.encontrar_todos_separadores(mapa), key)):
+                    pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa)
+                else:
+                    movimento.movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], -1, 0, 1, portais, 2, pos_mapa_atual, mapa)
+                    pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa)
+
+            elif key == "d":  # move para direita
+                limite = movimento.verificar_limite(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]])
+                if (movimento.transicao_mapa(mapa, pos_mapa_atual, limite, map_functions.encontrar_todos_separadores(mapa), key)):
+                    pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa)
+                else:
+                    movimento.movimentar_jogador(mapa[pos_mapa_atual[0]][pos_mapa_atual[1]], 1, 0, 3, portais, 2, pos_mapa_atual, mapa)
+                    pos_mapa_atual = map_functions.encontrar_mapa_atual(mapa)
+
             elif key == "q":  # sai do jogo
+                terminar_Timer()
                 break
+
+        count += 1
+
+if __name__ == "__main__":
+    main()
+
